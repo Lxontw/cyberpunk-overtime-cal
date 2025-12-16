@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="OT Calc">
     
-    <title>CyberPunk Overtime Calc</title>
+    <title>Overtime Calc v2.0</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -16,8 +16,9 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Google Fonts: Orbitron & Rajdhani -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <!-- Orbitron (Cyber), Inter (Modern), Roboto Mono (Tactical) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <!-- Custom Config & Styles -->
     <script>
@@ -25,20 +26,27 @@
             theme: {
                 extend: {
                     colors: {
-                        cyber: {
-                            black: '#050505',
-                            dark: '#0a0a0f',
-                            panel: '#12121a',
-                            cyan: '#00f3ff',
-                            pink: '#ff00ff',
-                            yellow: '#fcee0a',
-                            green: '#0aff0a',
-                            dim: 'rgba(255,255,255,0.1)'
+                        // Use CSS variables for dynamic theming
+                        skin: {
+                            base: 'var(--color-bg-base)',
+                            card: 'var(--color-bg-card)',
+                            input: 'var(--color-bg-input)',
+                            text: 'var(--color-text-main)',
+                            muted: 'var(--color-text-muted)',
+                            accent: 'var(--color-accent)',
+                            'accent-hover': 'var(--color-accent-hover)',
+                            border: 'var(--color-border)',
                         }
                     },
                     fontFamily: {
-                        orbitron: ['Orbitron', 'sans-serif'],
-                        rajdhani: ['Rajdhani', 'sans-serif'],
+                        main: 'var(--font-main)',
+                        display: 'var(--font-display)',
+                    },
+                    borderRadius: {
+                        theme: 'var(--radius-theme)',
+                    },
+                    boxShadow: {
+                        theme: 'var(--shadow-theme)',
                     }
                 }
             }
@@ -46,127 +54,167 @@
     </script>
 
     <style>
-        body {
-            background-color: #050505;
-            color: #e0e0e0;
-            font-family: 'Rajdhani', sans-serif;
-            background-image: 
-                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 0, 255, 0.03) 1px, transparent 1px);
-            background-size: 30px 30px;
-        }
-
-        /* Neon Glow Effects */
-        .neon-text-cyan {
-            text-shadow: 0 0 5px rgba(0, 243, 255, 0.7), 0 0 10px rgba(0, 243, 255, 0.5);
-        }
-        .neon-text-pink {
-            text-shadow: 0 0 5px rgba(255, 0, 255, 0.7), 0 0 10px rgba(255, 0, 255, 0.5);
-        }
+        /* --- Theme Definitions --- */
         
-        .cyber-card {
-            background: rgba(18, 18, 26, 0.95);
-            border: 1px solid rgba(0, 243, 255, 0.2);
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
-            clip-path: polygon(
-                0 0, 
-                100% 0, 
-                100% calc(100% - 20px), 
-                calc(100% - 20px) 100%, 
-                0 100%
-            );
+        :root {
+            /* Default: Cyberpunk */
+            --color-bg-base: #050505;
+            --color-bg-card: rgba(18, 18, 26, 0.95);
+            --color-bg-input: #0a0a0f;
+            --color-text-main: #e0e0e0;
+            --color-text-muted: #6b7280;
+            --color-accent: #00f3ff;
+            --color-accent-hover: #0aff0a;
+            --color-border: rgba(0, 243, 255, 0.3);
+            
+            --font-main: 'Rajdhani', sans-serif;
+            --font-display: 'Orbitron', sans-serif;
+            
+            --radius-theme: 0px; /* Sharp corners */
+            --shadow-theme: 0 0 15px rgba(0, 243, 255, 0.15);
+            
+            --clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+            --bg-pattern: linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 0, 255, 0.03) 1px, transparent 1px);
+            --input-border: 1px solid #333;
         }
 
-        .cyber-input {
-            background: #0a0a0f;
-            border: 1px solid #333;
-            color: #fff;
+        /* Theme: IOS Minimal */
+        [data-theme="ios"] {
+            --color-bg-base: #f2f2f7;
+            --color-bg-card: #ffffff;
+            --color-bg-input: #f3f4f6;
+            --color-text-main: #111827;
+            --color-text-muted: #9ca3af;
+            --color-accent: #007aff;
+            --color-accent-hover: #0056b3;
+            --color-border: #e5e7eb;
+            
+            --font-main: 'Inter', -apple-system, sans-serif;
+            --font-display: 'Inter', -apple-system, sans-serif;
+            
+            --radius-theme: 16px; /* Round corners */
+            --shadow-theme: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            
+            --clip-path: none;
+            --bg-pattern: none;
+            --input-border: 1px solid transparent;
+        }
+
+        /* Theme: Tactical Ops */
+        [data-theme="tactical"] {
+            --color-bg-base: #1c1917;
+            --color-bg-card: #292524;
+            --color-bg-input: #0c0a09;
+            --color-text-main: #e7e5e4;
+            --color-text-muted: #78716c;
+            --color-accent: #f97316; /* Orange */
+            --color-accent-hover: #ea580c;
+            --color-border: #44403c;
+            
+            --font-main: 'Roboto Mono', monospace;
+            --font-display: 'Roboto Mono', monospace;
+            
+            --radius-theme: 2px;
+            --shadow-theme: 4px 4px 0px 0px #0c0a09;
+            
+            --clip-path: none;
+            --bg-pattern: repeating-linear-gradient(45deg, #292524 0, #292524 1px, transparent 0, transparent 50%);
+            --bg-size: 10px 10px;
+            --input-border: 2px solid #44403c;
+        }
+
+        /* --- Base Styles --- */
+        body {
+            background-color: var(--color-bg-base);
+            color: var(--color-text-main);
+            font-family: var(--font-main);
+            background-image: var(--bg-pattern);
+            background-size: 30px 30px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .theme-card {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow-theme);
+            border-radius: var(--radius-theme);
+            clip-path: var(--clip-path);
             transition: all 0.3s ease;
         }
-        .cyber-input:focus {
+
+        .theme-input {
+            background: var(--color-bg-input);
+            border: var(--input-border);
+            color: var(--color-text-main);
+            border-radius: var(--radius-theme);
+            transition: all 0.3s ease;
+        }
+        .theme-input:focus {
             outline: none;
-            border-color: #00f3ff;
-            box-shadow: 0 0 8px rgba(0, 243, 255, 0.4);
+            border-color: var(--color-accent);
+            box-shadow: 0 0 0 2px rgba(var(--color-accent), 0.2);
+        }
+
+        .theme-btn {
+            background: var(--color-accent);
+            color: var(--color-bg-base); /* Contrast text */
+            border-radius: var(--radius-theme);
+            transition: all 0.2s;
+            font-weight: bold;
         }
         
-        .cyber-input-pink:focus {
-            border-color: #ff00ff;
-            box-shadow: 0 0 8px rgba(255, 0, 255, 0.4);
-        }
+        /* Special handling for contrast in different themes */
+        [data-theme="cyber"] .theme-btn { color: #000; box-shadow: 0 0 10px var(--color-accent); }
+        [data-theme="ios"] .theme-btn { color: #fff; box-shadow: 0 4px 6px rgba(0,122,255,0.3); }
+        [data-theme="tactical"] .theme-btn { color: #000; border: 1px solid #f97316; }
 
-        .btn-cyan {
-            background: linear-gradient(45deg, transparent 5%, #00f3ff 5%);
-            color: #000;
-            box-shadow: 6px 0px 0px #00a8b0;
-            transition: all 0.2s;
-        }
-        .btn-cyan:active {
-            box-shadow: 2px 0px 0px #00a8b0;
-            transform: translateX(4px);
-        }
-
-        .btn-flash {
-            background: rgba(10, 255, 10, 0.1);
-            border: 1px solid #0aff0a;
-            color: #0aff0a;
-            box-shadow: 0 0 10px rgba(10, 255, 10, 0.2);
-            transition: all 0.3s;
-        }
-        .btn-flash:active {
-            background: rgba(10, 255, 10, 0.3);
-            box-shadow: 0 0 20px rgba(10, 255, 10, 0.6);
+        .theme-btn:active {
             transform: scale(0.98);
+            filter: brightness(0.9);
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0a0a0f; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #333; 
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #00f3ff; 
-        }
-
-        /* Radio Button Styling */
+        /* Radio Selection */
         input[type="radio"]:checked + label {
-            background-color: rgba(0, 243, 255, 0.1);
-            border-color: #00f3ff;
-            color: #00f3ff;
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+            background-color: var(--color-accent);
+            color: var(--color-bg-base); 
+            border-color: var(--color-accent);
+            font-weight: bold;
         }
-
-        /* File Input Hidden */
-        #fileInput {
-            display: none;
+        /* Tactical specific radio override */
+        [data-theme="tactical"] input[type="radio"]:checked + label {
+            background-color: rgba(249, 115, 22, 0.2);
+            color: var(--color-accent);
+            border: 2px solid var(--color-accent);
         }
         
         /* Toggle Switch */
         .toggle-checkbox:checked {
             right: 0;
-            border-color: #00f3ff;
+            border-color: var(--color-accent);
         }
         .toggle-checkbox:checked + .toggle-label {
-            background-color: #00f3ff;
+            background-color: var(--color-accent);
         }
+
+        /* File Input Hidden */
+        #fileInput { display: none; }
+        
+        /* Smooth transitions for theme switch */
+        * { transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; }
     </style>
 </head>
 <body class="min-h-screen pb-20">
 
     <!-- Header -->
-    <header class="p-4 border-b border-gray-800 bg-cyber-dark sticky top-0 z-50">
+    <header class="p-4 border-b border-skin-border sticky top-0 z-50 backdrop-blur-md bg-skin-base/80">
         <div class="flex justify-between items-center max-w-md mx-auto">
-            <h1 class="text-2xl font-orbitron font-bold italic tracking-wider">
-                <span class="text-cyber-cyan neon-text-cyan">OVER</span><span class="text-white">TIME</span>
-                <span class="text-xs block text-cyber-pink font-rajdhani tracking-[0.3em] not-italic neon-text-pink">CALCULATOR v1.9</span>
+            <h1 class="text-2xl font-display font-bold tracking-wider italic">
+                <span class="text-skin-accent">OT</span> CALC <span class="text-xs not-italic text-skin-muted font-main">v2.0</span>
             </h1>
-            <div class="text-cyber-yellow text-xl">
-                <i class="fa-solid fa-bolt"></i>
+            <div class="flex gap-4">
+                <button onclick="toggleTheme()" class="text-skin-text hover:text-skin-accent transition-colors" title="切換風格">
+                    <i class="fa-solid fa-palette text-xl"></i>
+                </button>
             </div>
         </div>
     </header>
@@ -174,139 +222,135 @@
     <main class="max-w-md mx-auto p-4 space-y-6">
 
         <!-- Input Section -->
-        <section class="cyber-card p-6 relative">
-            <div class="absolute top-0 right-0 p-2 opacity-50 text-cyber-cyan text-xs font-mono">SYS.INPUT</div>
+        <section class="theme-card p-6 relative">
+            <div class="absolute top-2 right-3 text-[10px] text-skin-muted font-display tracking-widest opacity-50">SYS.INPUT</div>
             
             <!-- Quick Clock Out Button -->
-            <button id="btnQuickClockOut" class="w-full btn-flash py-3 rounded mb-6 font-bold font-rajdhani text-lg uppercase tracking-wider flex items-center justify-center gap-2 group">
+            <button id="btnQuickClockOut" class="w-full py-4 mb-6 theme-btn flex items-center justify-center gap-2 group uppercase tracking-widest font-display text-lg">
                 <i class="fa-solid fa-fingerprint group-hover:scale-110 transition-transform"></i> 
-                <span>一鍵下班 (Auto Fill)</span>
+                <span>一鍵下班</span>
             </button>
 
-            <!-- Hourly Rate Input (New) -->
-            <div class="mb-5 bg-gray-900/30 p-3 rounded border border-gray-800">
-                <label class="block text-cyber-green text-xs font-bold mb-1 uppercase tracking-wide">
-                    <i class="fa-solid fa-coins mr-1"></i>Hourly Rate (加班費/小時)
+            <!-- Hourly Rate -->
+            <div class="mb-5 p-3 rounded-theme border border-skin-border bg-skin-input/50">
+                <label class="block text-skin-accent text-xs font-bold mb-1 uppercase tracking-wide">
+                    <i class="fa-solid fa-coins mr-1"></i>時薪 (Hourly Rate)
                 </label>
                 <div class="flex items-center">
-                    <span class="text-cyber-green mr-2 text-lg">$</span>
-                    <input type="number" id="hourlyRate" placeholder="輸入時薪..." class="cyber-input w-full p-2 rounded text-lg font-mono text-cyber-green border-gray-700 focus:border-cyber-green">
+                    <span class="text-skin-accent mr-2 text-lg">$</span>
+                    <input type="number" id="hourlyRate" placeholder="輸入金額..." class="theme-input w-full p-2 text-lg font-main">
                 </div>
+                <div class="text-[10px] text-skin-muted mt-1 text-right">* 修改此欄位將連動計算總金額</div>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
-                <!-- Date Input -->
+                <!-- Date -->
                 <div class="mb-5">
-                    <label class="block text-cyber-cyan text-sm font-bold mb-2 uppercase tracking-wide">
+                    <label class="block text-skin-muted text-xs font-bold mb-2 uppercase tracking-wide">
                         <i class="fa-regular fa-calendar-days mr-2"></i>Date
                     </label>
-                    <input type="date" id="workDate" class="cyber-input w-full p-3 rounded text-base font-mono">
+                    <input type="date" id="workDate" class="theme-input w-full p-3 font-main">
                 </div>
-                 <!-- Shift Selection (Simplified Layout) -->
+                 <!-- Shift Selection (Left=Morning, Right=Night) -->
                 <div class="mb-5">
-                    <label class="block text-cyber-cyan text-sm font-bold mb-2 uppercase tracking-wide">
+                    <label class="block text-skin-muted text-xs font-bold mb-2 uppercase tracking-wide">
                         <i class="fa-solid fa-briefcase mr-2"></i>Shift
                     </label>
                     <div class="flex gap-2">
-                        <!-- Left Side: Morning (Text Only) -->
+                        <!-- Left Side: Morning -->
                         <div class="flex-1">
                             <input type="radio" name="shift" id="shiftMorning" value="morning" class="hidden" checked>
-                            <label for="shiftMorning" class="cursor-pointer block border border-gray-700 rounded p-3 text-center transition-all h-full flex items-center justify-center hover:bg-white/5">
-                                <span class="font-bold text-lg">早班</span>
+                            <label for="shiftMorning" class="cursor-pointer block border border-skin-border rounded-theme p-3 text-center transition-all h-full flex items-center justify-center hover:bg-skin-accent/10">
+                                <span class="font-bold text-lg font-main">早班</span>
                             </label>
                         </div>
-                        <!-- Right Side: Night (Text Only) -->
+                        <!-- Right Side: Night -->
                         <div class="flex-1">
                             <input type="radio" name="shift" id="shiftNight" value="night" class="hidden">
-                            <label for="shiftNight" class="cursor-pointer block border border-gray-700 rounded p-3 text-center transition-all h-full flex items-center justify-center hover:bg-white/5">
-                                <span class="font-bold text-lg">晚班</span>
+                            <label for="shiftNight" class="cursor-pointer block border border-skin-border rounded-theme p-3 text-center transition-all h-full flex items-center justify-center hover:bg-skin-accent/10">
+                                <span class="font-bold text-lg font-main">晚班</span>
                             </label>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Time Span Input (Start & End) -->
-            <div class="mb-6 bg-gray-900/50 p-3 rounded border border-gray-800">
+            <!-- Time Span -->
+            <div class="mb-6 p-3 rounded-theme border border-skin-border bg-skin-input/50">
                 <div class="flex items-center justify-between mb-2">
-                    <label class="text-cyber-cyan text-sm font-bold uppercase tracking-wide">
-                        <i class="fa-solid fa-stopwatch mr-2"></i>OT Period
+                    <label class="text-skin-muted text-xs font-bold uppercase tracking-wide">
+                        <i class="fa-solid fa-stopwatch mr-2"></i>加班時段 (Period)
                     </label>
-                    <button onclick="resetStartTime()" class="text-xs text-gray-500 hover:text-cyber-cyan underline decoration-dotted">
-                        重置預設
+                    <button onclick="resetStartTime()" class="text-[10px] text-skin-muted hover:text-skin-accent underline decoration-dotted">
+                        重置
                     </button>
                 </div>
                 
                 <div class="flex items-center gap-2">
-                    <!-- Start Time -->
+                    <!-- Start -->
                     <div class="flex-1">
-                        <div class="text-[10px] text-gray-400 mb-1 uppercase text-center">Start (起始)</div>
-                        <input type="time" id="startTime" class="cyber-input w-full p-2 rounded text-xl font-mono text-center text-cyber-cyan border-cyber-cyan/30">
+                        <div class="text-[10px] text-skin-muted mb-1 text-center">Start</div>
+                        <input type="time" id="startTime" class="theme-input w-full p-2 text-xl text-center font-main text-skin-accent">
                     </div>
-                    
-                    <!-- Arrow -->
-                    <div class="text-gray-500 pt-5">
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </div>
-
-                    <!-- End Time -->
+                    <div class="text-skin-muted pt-5"><i class="fa-solid fa-arrow-right"></i></div>
+                    <!-- End -->
                     <div class="flex-1">
-                        <div class="text-[10px] text-gray-400 mb-1 uppercase text-center">End (打卡)</div>
-                        <input type="time" id="endTime" class="cyber-input cyber-input-pink w-full p-2 rounded text-xl font-mono text-center text-cyber-pink border-cyber-pink/30">
+                        <div class="text-[10px] text-skin-muted mb-1 text-center">End</div>
+                        <input type="time" id="endTime" class="theme-input w-full p-2 text-xl text-center font-main" style="color: var(--color-accent-hover)">
                     </div>
                 </div>
-                <div class="text-right mt-1">
-                     <span id="crossDayBadge" class="hidden text-[10px] bg-cyber-pink text-black px-1 rounded font-bold">NEXT DAY +1</span>
+                <div class="text-right mt-1 h-4">
+                     <span id="crossDayBadge" class="hidden text-[10px] bg-skin-accent text-skin-base px-1 rounded font-bold">NEXT DAY +1</span>
                 </div>
             </div>
 
             <!-- Live Preview -->
-            <div class="bg-black/40 rounded p-4 mb-6 border-l-4 border-cyber-pink">
+            <div class="bg-black/20 rounded-theme p-4 mb-6 border-l-4 border-skin-accent">
                 <div class="flex justify-between items-end">
                     <div>
-                        <div class="text-gray-400 text-xs uppercase mb-1">Estimated Pay</div>
-                        <div id="previewPay" class="text-2xl text-cyber-green font-bold font-mono">$0</div>
+                        <div class="text-skin-muted text-[10px] uppercase mb-1">Estimated Pay (當次預估)</div>
+                        <div id="previewPay" class="text-2xl text-skin-accent font-bold font-display">$0</div>
                     </div>
                     <div class="text-right">
-                        <div class="text-4xl font-bold font-mono text-white neon-text-pink" id="previewHours">0.0</div>
-                        <div class="text-xs text-cyber-pink uppercase">Hours Added</div>
+                        <div class="text-4xl font-bold font-display text-skin-text" id="previewHours">0.0</div>
+                        <div class="text-[10px] text-skin-accent uppercase">Hours Added</div>
                     </div>
                 </div>
-                <div id="statusText" class="text-right text-[10px] text-gray-500 mt-1">請輸入打卡時間</div>
+                <div id="statusText" class="text-right text-[10px] text-skin-muted mt-1">請輸入打卡時間</div>
             </div>
 
-            <!-- Auto Backup Toggle & Save -->
+            <!-- Auto Backup -->
             <div class="flex items-center justify-end mb-3 gap-2">
                 <label class="inline-flex items-center cursor-pointer">
                     <input type="checkbox" id="autoBackupToggle" class="sr-only peer">
-                    <div class="relative w-9 h-5 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-cyber-green"></div>
-                    <span class="ms-2 text-xs text-gray-400 font-mono hover:text-white transition-colors">自動下載備份 (Auto-DL)</span>
+                    <div class="relative w-9 h-5 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-skin-accent"></div>
+                    <span class="ms-2 text-xs text-skin-muted font-main">自動下載備份 (Auto-DL)</span>
                 </label>
             </div>
 
-            <!-- Action Buttons -->
-            <button id="btnSave" class="btn-cyan w-full py-4 font-bold font-orbitron text-lg uppercase tracking-wider">
+            <!-- Save Button -->
+            <button id="btnSave" class="w-full py-4 theme-btn font-display text-xl uppercase tracking-wider font-bold shadow-lg">
                 Confirm & Save
             </button>
         </section>
 
-        <!-- Stats & History Section -->
+        <!-- History Section -->
         <section>
-            <div class="flex justify-between items-end mb-4">
+            <div class="flex justify-between items-end mb-4 px-1">
                 <div>
-                    <h2 class="text-cyber-cyan font-bold text-lg border-b-2 border-cyber-cyan px-2 inline-block">LOG_HISTORY</h2>
-                    <div class="text-gray-400 text-sm font-mono mt-1">
-                        Total: <span id="totalHours" class="text-white font-bold">0.0</span> Hrs
-                        <span class="mx-1 text-gray-600">|</span>
-                        <span id="totalMoney" class="text-cyber-green font-bold">$0</span>
+                    <h2 class="text-skin-accent font-bold text-lg border-b-2 border-skin-accent px-1 inline-block font-display">HISTORY</h2>
+                    <div class="text-skin-muted text-xs font-main mt-1">
+                        Total: <span id="totalHours" class="text-skin-text font-bold">0.0</span> Hrs
+                        <span class="mx-1">|</span>
+                        <span id="totalMoney" class="text-skin-accent font-bold text-lg">$0</span>
                     </div>
                 </div>
-                <!-- Backup Tools -->
+                <!-- Tools -->
                 <div class="flex gap-2">
-                    <button onclick="exportData()" class="text-xs bg-gray-800 text-cyber-cyan border border-cyber-cyan px-2 py-1 rounded hover:bg-cyber-cyan hover:text-black transition-colors" title="手動匯出">
+                    <button onclick="exportData()" class="text-xs border border-skin-border text-skin-muted px-3 py-1 rounded-theme hover:bg-skin-accent hover:text-skin-base transition-colors">
                         <i class="fa-solid fa-download"></i> 備份
                     </button>
-                    <button onclick="triggerImport()" class="text-xs bg-gray-800 text-cyber-pink border border-cyber-pink px-2 py-1 rounded hover:bg-cyber-pink hover:text-black transition-colors" title="匯入還原">
+                    <button onclick="triggerImport()" class="text-xs border border-skin-border text-skin-muted px-3 py-1 rounded-theme hover:bg-skin-accent hover:text-skin-base transition-colors">
                         <i class="fa-solid fa-upload"></i> 還原
                     </button>
                     <input type="file" id="fileInput" accept=".json" onchange="importData(this)">
@@ -314,25 +358,50 @@
             </div>
 
             <div id="historyList" class="space-y-3 pb-10">
-                <!-- JS will inject items here -->
-                <div class="text-center text-gray-600 py-8 font-mono text-sm">No records found in database.</div>
+                <!-- JS Inject -->
+                <div class="text-center text-skin-muted py-8 font-main text-sm">No records found.</div>
             </div>
 
-            <button onclick="clearAllData()" class="w-full text-xs text-gray-600 hover:text-red-500 mt-8 font-mono border border-gray-800 hover:border-red-900 p-2 rounded transition-colors">
+            <button onclick="clearAllData()" class="w-full text-xs text-skin-muted hover:text-red-500 mt-8 font-main border border-skin-border hover:border-red-500 p-2 rounded-theme transition-colors opacity-60 hover:opacity-100">
                 [SYSTEM] CLEAR_MEMORY
             </button>
         </section>
     </main>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-cyber-pink text-white px-6 py-3 rounded shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-50 font-bold tracking-wide text-sm whitespace-nowrap">
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-skin-accent text-skin-base px-6 py-3 rounded-theme shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-50 font-bold tracking-wide text-sm whitespace-nowrap font-display">
         DATA SAVED
     </div>
 
     <script>
-        // --- Configuration & Constants ---
+        // --- Theme Manager ---
+        const THEMES = ['cyber', 'ios', 'tactical'];
+        const THEME_NAMES = ['Cyberpunk', 'iOS Minimal', 'Tactical Ops'];
+        let currentThemeIndex = 0;
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('app_theme');
+            if (savedTheme && THEMES.includes(savedTheme)) {
+                currentThemeIndex = THEMES.indexOf(savedTheme);
+            }
+            applyTheme();
+        }
+
+        function toggleTheme() {
+            currentThemeIndex = (currentThemeIndex + 1) % THEMES.length;
+            applyTheme();
+            showToastMessage(`Switched to: ${THEME_NAMES[currentThemeIndex]}`);
+        }
+
+        function applyTheme() {
+            const theme = THEMES[currentThemeIndex];
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('app_theme', theme);
+        }
+
+        // --- Config & Constants ---
         const STANDARD_MORNING_END = "17:30";
-        const STANDARD_NIGHT_END = "03:00"; // Next day
+        const STANDARD_NIGHT_END = "03:00"; 
         const STORAGE_KEY = 'ot_history';
         const SETTING_AUTO_BACKUP = 'setting_auto_backup';
         const SETTING_HOURLY_RATE = 'setting_hourly_rate';
@@ -357,24 +426,37 @@
         const elFileInput = document.getElementById('fileInput');
         const elAutoBackupToggle = document.getElementById('autoBackupToggle');
 
+        // Global variable for total hours
+        let currentTotalHours = 0;
+
         // --- Init ---
-        // Set default date to today
+        initTheme();
         elDate.valueAsDate = new Date();
-        loadHistory();
-        resetStartTime(); 
         
-        // Load Settings
         const savedAutoBackup = localStorage.getItem(SETTING_AUTO_BACKUP);
         elAutoBackupToggle.checked = savedAutoBackup === 'true';
 
         const savedRate = localStorage.getItem(SETTING_HOURLY_RATE);
         if(savedRate) elHourlyRate.value = savedRate;
 
+        // Load History immediately after setting up variables
+        loadHistory();
+        resetStartTime(); 
+
         // --- Event Listeners ---
         ['input', 'change', 'blur'].forEach(evt => {
             elEndTime.addEventListener(evt, updateCalculation);
             elStartTime.addEventListener(evt, updateCalculation);
-            elHourlyRate.addEventListener(evt, updateCalculation);
+        });
+        
+        // Update both calculation AND total money when rate changes
+        elHourlyRate.addEventListener('input', () => {
+             updateCalculation();
+             updateTotalMoneyDisplay(); // Dynamic update
+        });
+        elHourlyRate.addEventListener('change', () => {
+             localStorage.setItem(SETTING_HOURLY_RATE, elHourlyRate.value);
+             updateTotalMoneyDisplay();
         });
         
         elShiftMorning.addEventListener('change', handleShiftChange);
@@ -382,18 +464,11 @@
         elSaveBtn.addEventListener('click', saveRecord);
         elQuickBtn.addEventListener('click', quickClockOut);
         
-        // Save settings change
         elAutoBackupToggle.addEventListener('change', () => {
             localStorage.setItem(SETTING_AUTO_BACKUP, elAutoBackupToggle.checked);
         });
-        
-        // Save rate on change
-        elHourlyRate.addEventListener('change', () => {
-             localStorage.setItem(SETTING_HOURLY_RATE, elHourlyRate.value);
-        });
 
-        // --- Core Logic ---
-
+        // --- Logic ---
         function quickClockOut() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -404,7 +479,7 @@
             let isMorning = true;
 
             if (h < 12) {
-                isMorning = false; // Night Shift
+                isMorning = false;
             }
 
             if (isMorning) {
@@ -441,10 +516,8 @@
 
         function calculateDiffMinutes(startStr, endStr) {
             if (!startStr || !endStr) return 0;
-
             const startMins = timeToMinutes(startStr);
             const endMins = timeToMinutes(endStr);
-            
             let diff = endMins - startMins;
             let isCrossDay = false;
 
@@ -464,19 +537,12 @@
 
         function calculateOvertimeHours(diffMinutes) {
             if (diffMinutes <= 0) return 0;
-
             const hours = Math.floor(diffMinutes / 60);
             const remainder = diffMinutes % 60;
-            
             let extra = 0;
-            if (remainder <= 20) {
-                extra = 0;
-            } else if (remainder <= 50) {
-                extra = 0.5;
-            } else {
-                extra = 1.0;
-            }
-
+            if (remainder <= 20) extra = 0;
+            else if (remainder <= 50) extra = 0.5;
+            else extra = 1.0;
             return hours + extra;
         }
 
@@ -502,14 +568,18 @@
             
             if (diff <= 0) {
                 elStatus.textContent = `時數不足`;
-                elStatus.className = "text-sm text-gray-500";
+                elStatus.className = "text-right text-[10px] text-skin-muted mt-1";
             } else {
-                elStatus.innerHTML = `總計 <span class="text-cyber-cyan">${diff}</span> 分鐘`;
-                elStatus.className = "text-sm text-gray-300";
+                elStatus.innerHTML = `總計 <span class="text-skin-accent">${diff}</span> 分鐘`;
+                elStatus.className = "text-right text-[10px] text-skin-muted mt-1";
             }
         }
-
-        // --- Data Management & Backup ---
+        
+        function updateTotalMoneyDisplay() {
+            const rate = parseFloat(elHourlyRate.value) || 0;
+            const totalMoney = Math.round(currentTotalHours * rate);
+            elTotalMoney.textContent = `$${totalMoney.toLocaleString()}`;
+        }
 
         function saveRecord() {
             const date = elDate.value;
@@ -517,6 +587,7 @@
             const end = elEndTime.value;
             const shift = elShiftMorning.checked ? '早班' : '晚班';
             const ot = parseFloat(elPreview.textContent);
+            // We still save rate/pay for record keeping, but display uses current input
             const rate = parseFloat(elHourlyRate.value) || 0;
             const pay = Math.round(ot * rate);
 
@@ -526,39 +597,31 @@
             }
 
             const record = {
-                id: Date.now(), // Still used as unique key
+                id: Date.now(),
                 date,
                 timeRange: `${start} - ${end}`,
                 shift,
                 ot,
-                rate, // Save snapshot of rate
-                pay   // Save snapshot of pay
+                rate,
+                pay
             };
 
             let history = getHistoryFromStorage();
-            
-            // Overwrite Logic: Check for same date + same shift
-            // We filter out any existing record with same date & shift
-            // effectively replacing it with the new one at the top.
-            history = history.filter(item => 
-                !(item.date === date && item.shift === shift)
-            );
-
+            // Overwrite logic
+            history = history.filter(item => !(item.date === date && item.shift === shift));
             history.unshift(record);
             
             try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
                 loadHistory();
-                
-                // Auto Backup Check
                 if (elAutoBackupToggle.checked) {
-                    exportData(true); // true = auto mode
+                    exportData(true);
                     showToastMessage("SAVED & EXPORTED");
                 } else {
                     showToast();
                 }
             } catch (e) {
-                alert("儲存失敗！可能是瀏覽器隱私模式或儲存空間不足。");
+                alert("儲存失敗");
             }
         }
 
@@ -566,70 +629,52 @@
             try {
                 const data = localStorage.getItem(STORAGE_KEY);
                 return data ? JSON.parse(data) : [];
-            } catch (e) {
-                console.error("Storage access error", e);
-                return [];
-            }
+            } catch (e) { return []; }
         }
 
         function exportData(isAuto = false) {
             const data = getHistoryFromStorage();
             if (data.length === 0) {
-                if(!isAuto) alert("目前沒有資料可供備份");
+                if(!isAuto) alert("無資料");
                 return;
             }
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
-            const downloadAnchorNode = document.createElement('a');
-            downloadAnchorNode.setAttribute("href", dataStr);
-            
-            // Fixed filename as requested
-            const filename = "OT_Backup.json";
-            downloadAnchorNode.setAttribute("download", filename);
-            
-            document.body.appendChild(downloadAnchorNode); 
-            downloadAnchorNode.click();
-            downloadAnchorNode.remove();
+            const dlNode = document.createElement('a');
+            dlNode.setAttribute("href", dataStr);
+            dlNode.setAttribute("download", "OT_Backup.json");
+            document.body.appendChild(dlNode); 
+            dlNode.click();
+            dlNode.remove();
         }
 
-        function triggerImport() {
-            elFileInput.click();
-        }
+        function triggerImport() { elFileInput.click(); }
 
         function importData(input) {
             const file = input.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const json = JSON.parse(e.target.result);
                     if (Array.isArray(json)) {
-                        if(confirm(`確定要匯入 ${json.length} 筆資料嗎？這將覆蓋現有資料（或您可以選擇合併）。\n按「確定」= 合併 (保留現有)\n按「取消」= 取消操作`)) {
-                            // Merge Strategy: Combine and remove duplicates by ID
+                        if(confirm(`匯入 ${json.length} 筆資料？(將合併現有資料)`)) {
                             const current = getHistoryFromStorage();
                             const merged = [...json, ...current];
-                            // Dedup based on ID
                             const unique = Array.from(new Map(merged.map(item => [item.id, item])).values());
-                            // Sort by ID desc (newest first)
                             unique.sort((a, b) => b.id - a.id);
-                            
                             localStorage.setItem(STORAGE_KEY, JSON.stringify(unique));
                             loadHistory();
-                            showToastMessage("匯入成功！");
+                            showToastMessage("匯入成功");
                         }
-                    } else {
-                        alert("檔案格式錯誤");
-                    }
-                } catch (err) {
-                    alert("檔案讀取失敗，請確認檔案是否正確。");
-                }
+                    } else { alert("格式錯誤"); }
+                } catch (err) { alert("讀取失敗"); }
             };
             reader.readAsText(file);
-            input.value = ''; // Reset
+            input.value = '';
         }
 
         function deleteRecord(id) {
-            if(!confirm("確定刪除此紀錄?")) return;
+            if(!confirm("刪除此紀錄?")) return;
             let history = getHistoryFromStorage();
             history = history.filter(item => item.id !== id);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
@@ -637,7 +682,7 @@
         }
 
         function clearAllData() {
-            if(confirm("警告：這將刪除所有紀錄，無法復原。確定執行？")) {
+            if(confirm("警告：刪除所有紀錄？")) {
                 localStorage.removeItem(STORAGE_KEY);
                 loadHistory();
             }
@@ -646,39 +691,36 @@
         function loadHistory() {
             const history = getHistoryFromStorage();
             elHistoryList.innerHTML = '';
-            
-            let total = 0;
-            let totalMoney = 0;
+            currentTotalHours = 0; // Reset global accumulation
 
             if (history.length === 0) {
-                elHistoryList.innerHTML = '<div class="text-center text-gray-600 py-8 font-mono text-sm">[DATABASE_EMPTY]</div>';
+                elHistoryList.innerHTML = '<div class="text-center text-skin-muted py-8 font-main text-sm">[NO RECORDS]</div>';
             } else {
                 history.forEach(item => {
-                    total += item.ot;
-                    // Backward compatibility: if pay not saved, calc using stored rate or just 0
-                    const itemPay = item.pay || 0; 
-                    totalMoney += itemPay;
+                    currentTotalHours += item.ot;
+                    // Note: We don't display $ amount in history items anymore
+                    // because users want the Total Calculation to be dynamic based on current rate.
+                    // Displaying fixed historical pay would be confusing.
                     
                     const el = document.createElement('div');
-                    const accentColor = item.shift === '早班' ? 'border-l-cyber-cyan' : 'border-l-cyber-pink';
+                    const accentClass = item.shift === '早班' ? 'border-l-skin-accent' : 'border-l-skin-accent'; 
+                    
                     const icon = item.shift === '早班' ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
-                    const displayTime = item.timeRange ? item.timeRange : `End: ${item.time}`;
 
-                    el.className = `bg-cyber-panel border border-gray-800 border-l-4 ${accentColor} p-3 rounded shadow-lg flex justify-between items-center relative group`;
+                    el.className = `theme-card p-3 flex justify-between items-center relative group border-l-4 ${accentClass}`;
                     el.innerHTML = `
                         <div>
-                            <div class="text-xs text-gray-400 font-mono mb-1">${item.date} <span class="ml-2 text-gray-500">${icon} ${item.shift}</span></div>
-                            <div class="text-white font-bold text-base font-rajdhani text-cyber-yellow font-mono">${displayTime}</div>
-                            <div class="text-xs text-cyber-green mt-1 font-mono">$${itemPay.toLocaleString()}</div>
+                            <div class="text-xs text-skin-muted font-main mb-1">${item.date} <span class="ml-2">${icon} ${item.shift}</span></div>
+                            <div class="text-skin-text font-bold text-base font-display">${item.timeRange || item.time}</div>
                         </div>
                         <div class="flex items-center gap-4">
                             <div class="text-right">
-                                <div class="text-2xl font-bold font-mono ${item.ot > 0 ? 'text-white neon-text-cyan' : 'text-gray-600'}">
+                                <div class="text-2xl font-bold font-display text-skin-text">
                                     +${item.ot.toFixed(1)}
                                 </div>
-                                <div class="text-[10px] text-gray-500 uppercase">Hours</div>
+                                <div class="text-[10px] text-skin-muted uppercase">Hours</div>
                             </div>
-                            <button onclick="deleteRecord(${item.id})" class="text-gray-600 hover:text-red-500 transition-colors p-2">
+                            <button onclick="deleteRecord(${item.id})" class="text-skin-muted hover:text-red-500 transition-colors p-2">
                                 <i class="fa-solid fa-trash"></i>
                             </button>
                         </div>
@@ -687,12 +729,9 @@
                 });
             }
 
-            elTotalHours.textContent = total.toFixed(1);
-            elTotalMoney.textContent = `$${totalMoney.toLocaleString()}`;
-        }
-
-        function showToast() {
-            showToastMessage("DATA SAVED");
+            elTotalHours.textContent = currentTotalHours.toFixed(1);
+            // Recalculate Total Money based on CURRENT Rate input
+            updateTotalMoneyDisplay();
         }
 
         function showToastMessage(msg) {
@@ -704,6 +743,8 @@
                 elToast.classList.add('opacity-0');
             }, 2000);
         }
+
+        function showToast() { showToastMessage("DATA SAVED"); }
 
     </script>
 </body>
