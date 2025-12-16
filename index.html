@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="OT Calc">
     
-    <title>Overtime Calc v2.03</title>
+    <title>OT Calc v2.04</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&family=Roboto+Mono:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet">
 
     <!-- Custom Config & Styles -->
     <script>
@@ -39,6 +39,7 @@
                     fontFamily: {
                         main: 'var(--font-main)',
                         display: 'var(--font-display)',
+                        secret: ['"Special Elite"', 'Courier New', 'monospace'],
                     },
                     borderRadius: {
                         theme: 'var(--radius-theme)',
@@ -109,11 +110,7 @@
         }
 
         /* --- Base Styles --- */
-        html {
-            font-size: 100%;
-            transition: font-size 0.2s ease;
-        }
-
+        html { font-size: 100%; transition: font-size 0.2s ease; }
         body {
             background-color: var(--color-bg-base);
             color: var(--color-text-main);
@@ -140,11 +137,7 @@
             transition: all 0.3s ease;
             min-height: 2.5rem; 
         }
-        .theme-input:focus {
-            outline: none;
-            border-color: var(--color-accent);
-            box-shadow: 0 0 0 2px rgba(var(--color-accent), 0.2);
-        }
+        .theme-input:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 2px rgba(var(--color-accent), 0.2); }
 
         .theme-btn {
             background: var(--color-accent);
@@ -157,11 +150,7 @@
         [data-theme="cyber"] .theme-btn { color: #000; box-shadow: 0 0 10px var(--color-accent); }
         [data-theme="ios"] .theme-btn { color: #fff; box-shadow: 0 4px 6px rgba(0,122,255,0.3); }
         [data-theme="tactical"] .theme-btn { color: #000; border: 1px solid #f97316; }
-
-        .theme-btn:active {
-            transform: scale(0.98);
-            filter: brightness(0.9);
-        }
+        .theme-btn:active { transform: scale(0.98); filter: brightness(0.9); }
 
         input[type="radio"]:checked + label {
             background-color: var(--color-accent);
@@ -179,13 +168,24 @@
         .toggle-checkbox:checked + .toggle-label { background-color: var(--color-accent); }
 
         #fileInput { display: none; }
+        .modal-overlay { background-color: rgba(0,0,0,0.85); backdrop-filter: blur(4px); }
         
-        /* Modal for Paste Restore */
-        .modal-overlay {
-            background-color: rgba(0,0,0,0.8);
-            backdrop-filter: blur(4px);
+        /* Secret Report Styles */
+        .secret-paper {
+            background-color: #f4f1ea;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23d6d3cd' fill-opacity='0.4'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z'/%3E%3C/g%3E%3C/svg%3E");
+            color: #1a1a1a;
         }
-        
+        .stamp {
+            border: 0.2rem solid #ef4444;
+            color: #ef4444;
+            mask-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png');
+            -webkit-mask-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png');
+            mask-size: 900px;
+            -webkit-mask-size: 900px;
+            mix-blend-mode: multiply;
+        }
+
         * { transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; }
     </style>
 </head>
@@ -194,597 +194,273 @@
     <header class="p-4 border-b border-skin-border sticky top-0 z-50 backdrop-blur-md bg-skin-base/80">
         <div class="flex justify-between items-center max-w-md mx-auto">
             <h1 class="text-2xl font-display font-bold tracking-wider italic">
-                <span class="text-skin-accent">OT</span> CALC <span class="text-xs not-italic text-skin-muted font-main">v2.03</span>
+                <span class="text-skin-accent">OT</span> CALC <span class="text-xs not-italic text-skin-muted font-main">v2.04</span>
             </h1>
-            <div class="flex gap-3 items-center">
-                <!-- Font Size Controls -->
-                <div class="flex items-center bg-skin-card border border-skin-border rounded-theme px-2 py-1 h-8">
-                    <button onclick="adjustFontSize(-5)" class="text-skin-muted hover:text-skin-text px-2 h-full flex items-center justify-center active:scale-90 transition-transform" title="縮小字體">
-                        <i class="fa-solid fa-minus text-xs"></i>
-                    </button>
-                    <span class="text-xs text-skin-muted mx-1 select-none font-bold">A</span>
-                    <button onclick="adjustFontSize(5)" class="text-skin-muted hover:text-skin-text px-2 h-full flex items-center justify-center active:scale-90 transition-transform" title="放大字體">
-                        <i class="fa-solid fa-plus text-xs"></i>
-                    </button>
+            <div class="flex gap-2 items-center">
+                <!-- Zoom -->
+                <div class="flex items-center bg-skin-card border border-skin-border rounded-theme px-1 py-1 h-8">
+                    <button onclick="adjustFontSize(-5)" class="text-skin-muted hover:text-skin-text px-2 h-full flex items-center justify-center active:scale-90 transition-transform"><i class="fa-solid fa-minus text-xs"></i></button>
+                    <span class="text-xs text-skin-muted select-none font-bold">A</span>
+                    <button onclick="adjustFontSize(5)" class="text-skin-muted hover:text-skin-text px-2 h-full flex items-center justify-center active:scale-90 transition-transform"><i class="fa-solid fa-plus text-xs"></i></button>
                 </div>
-                
-                <!-- Theme Toggle -->
-                <button onclick="toggleTheme()" class="text-skin-text hover:text-skin-accent transition-colors w-8 h-8 flex items-center justify-center" title="切換風格">
-                    <i class="fa-solid fa-palette text-xl"></i>
-                </button>
+                <!-- Settings -->
+                <button onclick="openSettingsModal()" class="text-skin-text hover:text-skin-accent transition-colors w-8 h-8 flex items-center justify-center"><i class="fa-solid fa-gear text-lg"></i></button>
+                <!-- Theme -->
+                <button onclick="toggleTheme()" class="text-skin-text hover:text-skin-accent transition-colors w-8 h-8 flex items-center justify-center"><i class="fa-solid fa-palette text-xl"></i></button>
             </div>
         </div>
     </header>
 
     <main class="max-w-md mx-auto p-4 space-y-6">
-
         <section class="theme-card p-6 relative">
             <div class="absolute top-2 right-3 text-[10px] text-skin-muted font-display tracking-widest opacity-50">SYS.INPUT</div>
-            
             <button id="btnQuickClockOut" class="w-full py-4 mb-6 theme-btn flex items-center justify-center gap-2 group uppercase tracking-widest font-display text-lg">
-                <i class="fa-solid fa-fingerprint group-hover:scale-110 transition-transform"></i> 
-                <span>一鍵下班</span>
+                <i class="fa-solid fa-fingerprint group-hover:scale-110 transition-transform"></i><span>一鍵下班</span>
             </button>
-
             <div class="mb-5 p-3 rounded-theme border border-skin-border bg-skin-input/50">
-                <label class="block text-skin-accent text-xs font-bold mb-1 uppercase tracking-wide">
-                    <i class="fa-solid fa-coins mr-1"></i>時薪 (Hourly Rate)
-                </label>
-                <div class="flex items-center">
-                    <span class="text-skin-accent mr-2 text-lg">$</span>
-                    <input type="number" id="hourlyRate" placeholder="輸入金額..." class="theme-input w-full p-2 text-lg font-main">
-                </div>
+                <label class="block text-skin-accent text-xs font-bold mb-1 uppercase tracking-wide"><i class="fa-solid fa-coins mr-1"></i>時薪 (Hourly Rate)</label>
+                <div class="flex items-center"><span class="text-skin-accent mr-2 text-lg">$</span><input type="number" id="hourlyRate" placeholder="輸入金額..." class="theme-input w-full p-2 text-lg font-main"></div>
                 <div class="text-[10px] text-skin-muted mt-1 text-right">* 修改此欄位將連動計算總金額</div>
             </div>
-
             <div class="grid grid-cols-2 gap-4">
                 <div class="mb-5">
-                    <label class="block text-skin-muted text-xs font-bold mb-2 uppercase tracking-wide">
-                        <i class="fa-regular fa-calendar-days mr-2"></i>Date
-                    </label>
+                    <label class="block text-skin-muted text-xs font-bold mb-2 uppercase tracking-wide"><i class="fa-regular fa-calendar-days mr-2"></i>Date</label>
                     <input type="date" id="workDate" class="theme-input w-full p-3 font-main text-base">
+                    <div id="cycleInfo" class="text-[10px] text-skin-accent mt-1 text-right h-4 font-bold tracking-wide"></div>
                 </div>
                 <div class="mb-5">
-                    <label class="block text-skin-muted text-xs font-bold mb-2 uppercase tracking-wide">
-                        <i class="fa-solid fa-briefcase mr-2"></i>Shift
-                    </label>
+                    <label class="block text-skin-muted text-xs font-bold mb-2 uppercase tracking-wide"><i class="fa-solid fa-briefcase mr-2"></i>Shift</label>
                     <div class="flex gap-2">
-                        <div class="flex-1">
-                            <input type="radio" name="shift" id="shiftMorning" value="morning" class="hidden" checked>
-                            <label for="shiftMorning" class="cursor-pointer block border border-skin-border rounded-theme p-3 text-center transition-all h-full flex items-center justify-center hover:bg-skin-accent/10">
-                                <span class="font-bold text-lg font-main">早班</span>
-                            </label>
-                        </div>
-                        <div class="flex-1">
-                            <input type="radio" name="shift" id="shiftNight" value="night" class="hidden">
-                            <label for="shiftNight" class="cursor-pointer block border border-skin-border rounded-theme p-3 text-center transition-all h-full flex items-center justify-center hover:bg-skin-accent/10">
-                                <span class="font-bold text-lg font-main">晚班</span>
-                            </label>
-                        </div>
+                        <div class="flex-1 relative"><input type="radio" name="shift" id="shiftMorning" value="morning" class="hidden" checked><label for="shiftMorning" class="cursor-pointer block border border-skin-border rounded-theme p-3 text-center transition-all h-full flex items-center justify-center hover:bg-skin-accent/10"><span class="font-bold text-lg font-main">早班</span></label></div>
+                        <div class="flex-1 relative"><input type="radio" name="shift" id="shiftNight" value="night" class="hidden"><label for="shiftNight" class="cursor-pointer block border border-skin-border rounded-theme p-3 text-center transition-all h-full flex items-center justify-center hover:bg-skin-accent/10"><span class="font-bold text-lg font-main">晚班</span></label></div>
                     </div>
                 </div>
             </div>
-
             <div class="mb-6 p-3 rounded-theme border border-skin-border bg-skin-input/50">
-                <div class="flex items-center justify-between mb-2">
-                    <label class="text-skin-muted text-xs font-bold uppercase tracking-wide">
-                        <i class="fa-solid fa-stopwatch mr-2"></i>加班時段 (Period)
-                    </label>
-                    <button onclick="resetStartTime()" class="text-[10px] text-skin-muted hover:text-skin-accent underline decoration-dotted">
-                        重置
-                    </button>
-                </div>
-                
+                <div class="flex items-center justify-between mb-2"><label class="text-skin-muted text-xs font-bold uppercase tracking-wide"><i class="fa-solid fa-stopwatch mr-2"></i>加班時段</label><button onclick="resetStartTime()" class="text-[10px] text-skin-muted hover:text-skin-accent underline decoration-dotted">重置</button></div>
                 <div class="flex items-center gap-2">
-                    <div class="flex-1">
-                        <div class="text-[10px] text-skin-muted mb-1 text-center">Start</div>
-                        <input type="time" id="startTime" class="theme-input w-full p-2 text-xl text-center font-main text-skin-accent">
-                    </div>
+                    <div class="flex-1"><div class="text-[10px] text-skin-muted mb-1 text-center">Start</div><input type="time" id="startTime" class="theme-input w-full p-2 text-xl text-center font-main text-skin-accent"></div>
                     <div class="text-skin-muted pt-5"><i class="fa-solid fa-arrow-right"></i></div>
-                    <div class="flex-1">
-                        <div class="text-[10px] text-skin-muted mb-1 text-center">End</div>
-                        <input type="time" id="endTime" class="theme-input w-full p-2 text-xl text-center font-main" style="color: var(--color-accent-hover)">
-                    </div>
+                    <div class="flex-1"><div class="text-[10px] text-skin-muted mb-1 text-center">End</div><input type="time" id="endTime" class="theme-input w-full p-2 text-xl text-center font-main" style="color: var(--color-accent-hover)"></div>
                 </div>
-                <div class="text-right mt-1 h-4">
-                     <span id="crossDayBadge" class="hidden text-[10px] bg-skin-accent text-skin-base px-1 rounded font-bold">NEXT DAY +1</span>
-                </div>
+                <div class="text-right mt-1 h-4"><span id="crossDayBadge" class="hidden text-[10px] bg-skin-accent text-skin-base px-1 rounded font-bold">NEXT DAY +1</span></div>
             </div>
-
             <div class="bg-black/20 rounded-theme p-4 mb-6 border-l-4 border-skin-accent">
                 <div class="flex justify-between items-end">
-                    <div>
-                        <div class="text-skin-muted text-[10px] uppercase mb-1">Estimated Pay (當次預估)</div>
-                        <div id="previewPay" class="text-2xl text-skin-accent font-bold font-display">$0</div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-4xl font-bold font-display text-skin-text" id="previewHours">0.0</div>
-                        <div class="text-[10px] text-skin-accent uppercase">Hours Added</div>
-                    </div>
+                    <div><div class="text-skin-muted text-[10px] uppercase mb-1">Estimated Pay</div><div id="previewPay" class="text-2xl text-skin-accent font-bold font-display">$0</div></div>
+                    <div class="text-right"><div class="text-4xl font-bold font-display text-skin-text" id="previewHours">0.0</div><div class="text-[10px] text-skin-accent uppercase">Hours Added</div></div>
                 </div>
                 <div id="statusText" class="text-right text-[10px] text-skin-muted mt-1">請輸入打卡時間</div>
             </div>
-
             <div class="flex items-center justify-end mb-3 gap-2">
-                <label class="inline-flex items-center cursor-pointer">
-                    <input type="checkbox" id="autoBackupToggle" class="sr-only peer">
-                    <div class="relative w-9 h-5 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-skin-accent"></div>
-                    <span class="ms-2 text-xs text-skin-muted font-main">自動下載備份 (Auto-DL)</span>
-                </label>
+                <label class="inline-flex items-center cursor-pointer"><input type="checkbox" id="autoBackupToggle" class="sr-only peer"><div class="relative w-9 h-5 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-skin-accent"></div><span class="ms-2 text-xs text-skin-muted font-main">自動下載備份</span></label>
             </div>
-
-            <button id="btnSave" class="w-full py-4 theme-btn font-display text-xl uppercase tracking-wider font-bold shadow-lg">
-                Confirm & Save
-            </button>
+            <button id="btnSave" class="w-full py-4 theme-btn font-display text-xl uppercase tracking-wider font-bold shadow-lg">Confirm & Save</button>
         </section>
 
         <section>
             <div class="flex justify-between items-end mb-4 px-1">
                 <div>
                     <h2 class="text-skin-accent font-bold text-lg border-b-2 border-skin-accent px-1 inline-block font-display">HISTORY</h2>
-                    <div class="text-skin-muted text-xs font-main mt-1">
-                        Total: <span id="totalHours" class="text-skin-text font-bold">0.0</span> Hrs
-                        <span class="mx-1">|</span>
-                        <span id="totalMoney" class="text-skin-accent font-bold text-lg">$0</span>
-                    </div>
+                    <div class="text-skin-muted text-xs font-main mt-1">Total: <span id="totalHours" class="text-skin-text font-bold">0.0</span> Hrs <span class="mx-1">|</span> <span id="totalMoney" class="text-skin-accent font-bold text-lg">$0</span></div>
                 </div>
                 <div class="flex gap-2">
-                    <!-- Backup Group -->
-                    <div class="flex rounded-theme border border-skin-border overflow-hidden">
-                        <button onclick="exportData()" class="text-xs text-skin-muted px-3 py-1 hover:bg-skin-accent hover:text-skin-base transition-colors border-r border-skin-border" title="備份檔案">
-                            <i class="fa-solid fa-file-export"></i> 備份
-                        </button>
-                        <button onclick="copyDataToClipboard()" class="text-xs text-skin-muted px-3 py-1 hover:bg-skin-accent hover:text-skin-base transition-colors" title="複製純文字">
-                            <i class="fa-regular fa-copy"></i>
-                        </button>
-                    </div>
-                    
-                    <!-- Restore Group -->
-                    <div class="flex rounded-theme border border-skin-border overflow-hidden">
-                        <button onclick="triggerImport()" class="text-xs text-skin-muted px-3 py-1 hover:bg-skin-accent hover:text-skin-base transition-colors border-r border-skin-border" title="還原檔案">
-                            <i class="fa-solid fa-file-import"></i> 還原
-                        </button>
-                        <button onclick="openPasteModal()" class="text-xs text-skin-muted px-3 py-1 hover:bg-skin-accent hover:text-skin-base transition-colors" title="貼上純文字">
-                            <i class="fa-regular fa-paste"></i>
-                        </button>
+                    <button onclick="openReportModal()" class="text-xs bg-skin-card text-skin-accent border border-skin-border px-3 py-1 rounded-theme hover:bg-skin-accent hover:text-skin-base transition-colors" title="生成報表/導出">
+                        <i class="fa-regular fa-file-lines"></i>
+                    </button>
+                    <!-- Backup/Restore Group -->
+                    <div class="flex rounded-theme border border-skin-border overflow-hidden bg-skin-card">
+                        <button onclick="exportData()" class="text-xs text-skin-muted px-3 py-1 hover:bg-skin-accent hover:text-skin-base transition-colors border-r border-skin-border"><i class="fa-solid fa-file-export"></i></button>
+                        <button onclick="triggerImport()" class="text-xs text-skin-muted px-3 py-1 hover:bg-skin-accent hover:text-skin-base transition-colors border-r border-skin-border"><i class="fa-solid fa-file-import"></i></button>
+                        <button onclick="openPasteModal()" class="text-xs text-skin-muted px-3 py-1 hover:bg-skin-accent hover:text-skin-base transition-colors"><i class="fa-regular fa-paste"></i></button>
                     </div>
                     <input type="file" id="fileInput" accept=".json" onchange="importData(this)">
                 </div>
             </div>
-
-            <div id="historyList" class="space-y-3 pb-10">
-                <div class="text-center text-skin-muted py-8 font-main text-sm">No records found.</div>
-            </div>
-
-            <button onclick="clearAllData()" class="w-full text-xs text-skin-muted hover:text-red-500 mt-8 font-main border border-skin-border hover:border-red-500 p-2 rounded-theme transition-colors opacity-60 hover:opacity-100">
-                [SYSTEM] CLEAR_MEMORY
-            </button>
+            <div id="historyList" class="space-y-3 pb-10"><div class="text-center text-skin-muted py-8 font-main text-sm">No records found.</div></div>
+            <button onclick="clearAllData()" class="w-full text-xs text-skin-muted hover:text-red-500 mt-8 font-main border border-skin-border hover:border-red-500 p-2 rounded-theme transition-colors opacity-60 hover:opacity-100">[SYSTEM] CLEAR_MEMORY</button>
         </section>
     </main>
 
-    <!-- Paste Restore Modal -->
+    <!-- Paste Modal -->
     <div id="pasteModal" class="fixed inset-0 modal-overlay hidden z-[60] flex items-center justify-center p-4">
         <div class="theme-card w-full max-w-sm p-6 relative bg-skin-card">
-            <h3 class="text-skin-accent font-bold font-display text-xl mb-4">TEXT RESTORE</h3>
-            <textarea id="pasteInput" class="theme-input w-full h-32 p-3 font-mono text-xs mb-4" placeholder="請在此貼上備份代碼 (Paste backup code here)..."></textarea>
-            <div class="flex gap-2">
-                <button onclick="closePasteModal()" class="flex-1 py-2 border border-skin-border text-skin-muted rounded-theme font-bold">CANCEL</button>
-                <button onclick="restoreFromPaste()" class="flex-1 py-2 theme-btn rounded-theme font-bold">IMPORT</button>
+            <h3 class="text-skin-accent font-bold font-display text-xl mb-4">RESTORE</h3>
+            <textarea id="pasteInput" class="theme-input w-full h-32 p-3 font-mono text-xs mb-4" placeholder="Paste backup code..."></textarea>
+            <div class="flex gap-2"><button onclick="closePasteModal()" class="flex-1 py-2 border border-skin-border text-skin-muted rounded-theme font-bold">CANCEL</button><button onclick="restoreFromPaste()" class="flex-1 py-2 theme-btn rounded-theme font-bold">IMPORT</button></div>
+        </div>
+    </div>
+
+    <!-- Cycle Config Modal -->
+    <div id="settingsModal" class="fixed inset-0 modal-overlay hidden z-[60] flex items-center justify-center p-4">
+        <div class="theme-card w-full max-w-sm p-6 relative bg-skin-card">
+            <h3 class="text-skin-accent font-bold font-display text-xl mb-4">CYCLE SETTINGS</h3>
+            <div class="mb-4"><label class="block text-skin-muted text-xs font-bold mb-2 uppercase tracking-wide">週期基準日 (Anchor)</label><input type="date" id="cycleStart" class="theme-input w-full p-3 font-main text-base"></div>
+            <div class="mb-6"><label class="block text-skin-muted text-xs font-bold mb-2 uppercase tracking-wide">輪班規律 (Pattern)</label><input type="text" id="cyclePattern" class="theme-input w-full p-3 font-main text-base uppercase" placeholder="早,早,晚,晚,休,休"><p class="text-[10px] text-skin-muted mt-1">代碼: 早, 晚, 休 (用逗號分隔)</p></div>
+            <div class="flex gap-2"><button onclick="closeSettingsModal()" class="flex-1 py-2 border border-skin-border text-skin-muted rounded-theme font-bold">CANCEL</button><button onclick="saveCycleSettings()" class="flex-1 py-2 theme-btn rounded-theme font-bold">SAVE</button></div>
+        </div>
+    </div>
+
+    <!-- TOP SECRET REPORT MODAL -->
+    <div id="reportModal" class="fixed inset-0 modal-overlay hidden z-[70] overflow-y-auto flex justify-center p-4">
+        <div class="secret-paper w-full max-w-2xl min-h-[80vh] p-8 relative shadow-2xl my-4 flex flex-col">
+            <!-- Stamps -->
+            <div class="stamp absolute top-8 right-8 text-2xl font-black px-4 py-2 uppercase tracking-widest -rotate-12 opacity-80 pointer-events-none font-secret">Top Secret</div>
+            <div class="stamp absolute bottom-8 left-8 text-xl font-black px-4 py-1 uppercase tracking-widest rotate-6 opacity-60 pointer-events-none font-secret text-sm">Classified</div>
+            
+            <!-- Header -->
+            <div class="border-b-2 border-black/50 pb-4 mb-6 text-center">
+                <h2 class="text-3xl font-bold font-secret uppercase tracking-widest mb-1">Payroll Classified</h2>
+                <div class="text-xs font-mono uppercase tracking-widest opacity-70">Operation: Overtime Heist // ID: <span id="reportId">---</span></div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-3 gap-4 mb-6 border border-black/20 p-4 bg-white/50 font-secret">
+                <div class="text-center">
+                    <div class="text-xs uppercase opacity-60">Total Hours</div>
+                    <div class="text-2xl font-bold" id="reportTotalHours">0.0</div>
+                </div>
+                <div class="text-center border-l border-black/20">
+                    <div class="text-xs uppercase opacity-60">Rate</div>
+                    <div class="text-2xl font-bold" id="reportRate">$0</div>
+                </div>
+                <div class="text-center border-l border-black/20">
+                    <div class="text-xs uppercase opacity-60">Est. Payout</div>
+                    <div class="text-2xl font-bold text-red-700" id="reportTotalMoney">$0</div>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="flex-grow overflow-x-auto">
+                <table class="w-full text-left font-mono text-xs border-collapse">
+                    <thead>
+                        <tr class="border-b-2 border-black">
+                            <th class="py-2 uppercase">Date</th>
+                            <th class="py-2 uppercase">Shift</th>
+                            <th class="py-2 uppercase">Time</th>
+                            <th class="py-2 text-right uppercase">HRS</th>
+                            <th class="py-2 text-right uppercase">Est.$</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportTableBody">
+                        <!-- JS Generated -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Footer -->
+            <div class="mt-8 pt-4 border-t-2 border-black/50 text-center font-mono text-[10px] uppercase opacity-60">
+                Warning: Unauthorized access is prohibited. Burn after reading.
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-6 flex gap-4 no-print">
+                <button onclick="closeReportModal()" class="flex-1 py-3 bg-gray-800 text-white font-mono font-bold uppercase hover:bg-black transition-colors">Close</button>
+                <button onclick="downloadCSV()" class="flex-1 py-3 bg-blue-700 text-white font-mono font-bold uppercase hover:bg-blue-800 transition-colors">Export CSV</button>
+                <button onclick="window.print()" class="flex-1 py-3 bg-red-700 text-white font-mono font-bold uppercase hover:bg-red-800 transition-colors">Print PDF</button>
             </div>
         </div>
     </div>
 
-    <div id="toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-skin-accent text-skin-base px-6 py-3 rounded-theme shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-50 font-bold tracking-wide text-sm whitespace-nowrap font-display">
-        DATA SAVED
-    </div>
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-skin-accent text-skin-base px-6 py-3 rounded-theme shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-[80] font-bold tracking-wide text-sm whitespace-nowrap font-display">DATA SAVED</div>
 
     <script>
-        // --- Font Size Manager ---
-        let currentZoom = 100;
-        
-        function initFontSize() {
-            const saved = localStorage.getItem('app_fontsize');
-            if (saved) currentZoom = parseInt(saved);
-            applyFontSize();
-        }
+        /* --- Logic (Font/Theme/Cycle/Calc) Same as V2.03 --- */
+        let currentZoom=100;function initFontSize(){const e=localStorage.getItem("app_fontsize");e&&(currentZoom=parseInt(e)),applyFontSize()}function adjustFontSize(e){(currentZoom+=e)<80&&(currentZoom=80),currentZoom>130&&(currentZoom=130),applyFontSize(),localStorage.setItem("app_fontsize",currentZoom),showToastMessage(`Zoom: ${currentZoom}%`)}function applyFontSize(){document.documentElement.style.fontSize=`${currentZoom}%`}const THEMES=["cyber","ios","tactical"],THEME_NAMES=["Cyberpunk","iOS Minimal","Tactical Ops"];let currentThemeIndex=0;function initTheme(){const e=localStorage.getItem("app_theme");e&&THEMES.includes(e)&&(currentThemeIndex=THEMES.indexOf(e)),applyTheme()}function toggleTheme(){currentThemeIndex=(currentThemeIndex+1)%THEMES.length,applyTheme(),showToastMessage(`Switched to: ${THEME_NAMES[currentThemeIndex]}`)}function applyTheme(){const e=THEMES[currentThemeIndex];document.documentElement.setAttribute("data-theme",e),localStorage.setItem("app_theme",e)}
+        const STANDARD_MORNING_END="17:30",STANDARD_NIGHT_END="03:00",STORAGE_KEY="ot_history",SETTING_AUTO_BACKUP="setting_auto_backup",SETTING_HOURLY_RATE="setting_hourly_rate",SETTING_CYCLE="setting_cycle_config";const elDate=document.getElementById("workDate"),elShiftMorning=document.getElementById("shiftMorning"),elShiftNight=document.getElementById("shiftNight"),elStartTime=document.getElementById("startTime"),elEndTime=document.getElementById("endTime"),elPreview=document.getElementById("previewHours"),elPreviewPay=document.getElementById("previewPay"),elHourlyRate=document.getElementById("hourlyRate"),elStatus=document.getElementById("statusText"),elSaveBtn=document.getElementById("btnSave"),elHistoryList=document.getElementById("historyList"),elTotalHours=document.getElementById("totalHours"),elTotalMoney=document.getElementById("totalMoney"),elToast=document.getElementById("toast"),elCrossDayBadge=document.getElementById("crossDayBadge"),elQuickBtn=document.getElementById("btnQuickClockOut"),elFileInput=document.getElementById("fileInput"),elAutoBackupToggle=document.getElementById("autoBackupToggle"),elPasteModal=document.getElementById("pasteModal"),elPasteInput=document.getElementById("pasteInput"),elSettingsModal=document.getElementById("settingsModal"),elCycleStart=document.getElementById("cycleStart"),elCyclePattern=document.getElementById("cyclePattern"),elCycleInfo=document.getElementById("cycleInfo");let currentTotalHours=0,cycleConfig={anchor:null,pattern:[]};
+        initFontSize(),initTheme(),loadCycleSettings(),elDate.valueAsDate=new Date;const savedAutoBackup=localStorage.getItem("setting_auto_backup");elAutoBackupToggle.checked="true"===savedAutoBackup;const savedRate=localStorage.getItem("setting_hourly_rate");savedRate&&(elHourlyRate.value=savedRate),predictShift(elDate.value),loadHistory(),resetStartTime(),["input","change","blur"].forEach(e=>{elEndTime.addEventListener(e,updateCalculation),elStartTime.addEventListener(e,updateCalculation),elHourlyRate.addEventListener(e,updateCalculation)}),elHourlyRate.addEventListener("input",(()=>{updateCalculation(),updateTotalMoneyDisplay()})),elHourlyRate.addEventListener("change",(()=>{localStorage.setItem("setting_hourly_rate",elHourlyRate.value),updateTotalMoneyDisplay()})),elDate.addEventListener("change",(()=>{predictShift(elDate.value)})),elShiftMorning.addEventListener("change",handleShiftChange),elShiftNight.addEventListener("change",handleShiftChange),elSaveBtn.addEventListener("click",saveRecord),elQuickBtn.addEventListener("click",quickClockOut),elAutoBackupToggle.addEventListener("change",(()=>{localStorage.setItem("setting_auto_backup",elAutoBackupToggle.checked)}));
+        function loadCycleSettings(){try{const e=JSON.parse(localStorage.getItem("setting_cycle_config"));e&&e.anchor&&e.pattern&&e.pattern.length>0&&(cycleConfig=e)}catch(e){}}function openSettingsModal(){cycleConfig.anchor&&(elCycleStart.value=cycleConfig.anchor),cycleConfig.pattern.length>0&&(elCyclePattern.value=cycleConfig.pattern.join(",")),elSettingsModal.classList.remove("hidden")}function closeSettingsModal(){elSettingsModal.classList.add("hidden")}function saveCycleSettings(){const e=elCycleStart.value,t=elCyclePattern.value.trim();if(!e||!t)return void alert("請填寫完整資訊");const n=t.split(/[,\s]+/).map(e=>e.trim().toUpperCase());cycleConfig={anchor:e,pattern:n},localStorage.setItem("setting_cycle_config",JSON.stringify(cycleConfig)),closeSettingsModal(),showToastMessage("CYCLE SAVED"),predictShift(elDate.value)}
+        function predictShift(e){if(!cycleConfig.anchor||0===cycleConfig.pattern.length)return void(elCycleInfo.textContent="");const t=new Date(cycleConfig.anchor),n=new Date(e);t.setHours(0,0,0,0),n.setHours(0,0,0,0);const a=Math.floor((n-t)/864e5);if(a<0)return void(elCycleInfo.textContent="");const o=cycleConfig.pattern[a%cycleConfig.pattern.length];let l=o,r=!1;["M","早","早班"].includes(o)?(elShiftMorning.checked=!0,handleShiftChange(),l="AUTO: 早班 (DAY)"):["N","晚","晚班"].includes(o)?(elShiftNight.checked=!0,handleShiftChange(),l="AUTO: 晚班 (NIGHT)"):["O","休","休假","OFF"].includes(o)&&(r=!0,l="AUTO: 休假 (REST)"),elCycleInfo.textContent=l,r?elCycleInfo.classList.add("text-red-400"):elCycleInfo.classList.remove("text-red-400")}
+        function quickClockOut(){const e=new Date,t=String(e.getHours()).padStart(2,"0"),n=String(e.getMinutes()).padStart(2,"0"),a=`${t}:${n}`,o=e.getHours();let l=!0;o<12&&(l=!1),l?(elShiftMorning.checked=!0,elDate.valueAsDate=e):(elShiftNight.checked=!0,yesterday=new Date(e),yesterday.setDate(yesterday.getDate()-1),elDate.valueAsDate=yesterday),predictShift(elDate.value),resetStartTime(),elEndTime.value=a,updateCalculation(),showToastMessage("已帶入現在時間")}function handleShiftChange(){resetStartTime(),updateCalculation()}function resetStartTime(){const e=elShiftMorning.checked?STANDARD_MORNING_END:STANDARD_NIGHT_END;elStartTime.value=e,updateCalculation()}function timeToMinutes(e){const[t,n]=e.split(":").map(Number);return 60*t+n}function calculateDiffMinutes(e,t){if(!e||!t)return 0;const n=timeToMinutes(e),a=timeToMinutes(t);let o=a-n,l=!1;return o<0&&(o+=1440,l=!0),l?elCrossDayBadge.classList.remove("hidden"):elCrossDayBadge.classList.add("hidden"),o}
+        function calculateOvertimeHours(e){if(e<=0)return 0;const t=Math.floor(e/60),n=e%60;let a=0;return n<=20?a=0:n<=50?a=.5:a=1,t+a}function updateCalculation(){const e=elStartTime.value,t=elEndTime.value,n=parseFloat(elHourlyRate.value)||0;if(!t||!e)return elPreview.textContent="0.0",elPreviewPay.textContent="$0",elStatus.textContent="Waiting for input...",void elCrossDayBadge.classList.add("hidden");const a=calculateDiffMinutes(e,t),o=a>0?calculateOvertimeHours(a):0,l=Math.round(o*n);elPreview.textContent=o.toFixed(1),elPreviewPay.textContent=`$${l.toLocaleString()}`,a<=0?(elStatus.textContent="時數不足",elStatus.className="text-right text-[10px] text-skin-muted mt-1"):(elStatus.innerHTML=`總計 <span class="text-skin-accent">${a}</span> 分鐘`,elStatus.className="text-right text-[10px] text-skin-muted mt-1")}function updateTotalMoneyDisplay(){const e=parseFloat(elHourlyRate.value)||0,t=Math.round(currentTotalHours*e);elTotalMoney.textContent=`$${t.toLocaleString()}`}
+        async function saveRecord(){const e=elDate.value,t=elStartTime.value,n=elEndTime.value,a=elShiftMorning.checked?"早班":"晚班",o=parseFloat(elPreview.textContent),l=parseFloat(elHourlyRate.value)||0,r=Math.round(o*l);if(!e||!t||!n)return void alert("請完整填寫時間");const c={id:Date.now(),date:e,timeRange:`${t} - ${n}`,shift:a,ot:o,rate:l,pay:r};let s=getHistoryFromStorage();s=s.filter(t=>!(t.date===e&&t.shift===a)),s.unshift(c);try{localStorage.setItem("ot_history",JSON.stringify(s)),loadHistory(),elAutoBackupToggle.checked?(await exportData(!0),showToastMessage("SAVED"))://silent auto
+showToast()}catch(e){alert("儲存失敗")}}
+        function getHistoryFromStorage(){try{return JSON.parse(localStorage.getItem("ot_history"))||[]}catch(e){return[]}}
+        async function exportData(e=!1){const t=getHistoryFromStorage();if(0===t.length)return void(e||alert("無資料"));const n="OT_Backup.json",a=new File([JSON.stringify(t)],n,{type:"application/json"});if(!e&&navigator.canShare&&navigator.canShare({files:[a]}))try{return void(await navigator.share({files:[a]}))}catch(e){console.log("Share failed")}const o="data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(t)),l=document.createElement("a");l.setAttribute("href",o),l.setAttribute("download",n),document.body.appendChild(l),l.click(),l.remove()}
+        function copyDataToClipboard(){const e=getHistoryFromStorage();if(0===e.length)return void alert("無資料");const t=JSON.stringify(e);if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t).then((()=>showToastMessage("COPIED")));else{const e=document.createElement("textarea");e.value=t,e.style.position="fixed",document.body.appendChild(e),e.focus(),e.select();try{document.execCommand("copy"),showToastMessage("COPIED")}catch(e){alert("複製失敗")}document.body.removeChild(e)}}function openPasteModal(){elPasteInput.value="",elPasteModal.classList.remove("hidden")}function closePasteModal(){elPasteModal.classList.add("hidden")}function restoreFromPaste(){const e=elPasteInput.value.trim();if(!e)return;try{const t=JSON.parse(e);Array.isArray(t)?confirm(`匯入 ${t.length} 筆資料？`)&&(restoreAndSave(t),closePasteModal(),showToastMessage("匯入成功")):alert("格式錯誤")}catch(e){alert("無效的資料格式")}}
+        function triggerImport(){elFileInput.click()}function importData(e){const t=e.files[0];if(!t)return;const n=new FileReader;n.onload=function(e){try{const t=JSON.parse(e.target.result);Array.isArray(t)?confirm(`匯入 ${t.length} 筆資料？`)&&(restoreAndSave(t),showToastMessage("匯入成功")):alert("格式錯誤")}catch(e){alert("讀取失敗")}},n.readAsText(t),e.value=""}
+        function restoreAndSave(merged){const current=getHistoryFromStorage(),all=[...merged,...current],unique=Array.from(new Map(all.map(e=>[e.id,e])).values());unique.sort(((e,t)=>t.id-e.id)),localStorage.setItem("ot_history",JSON.stringify(unique)),loadHistory()}
+        function deleteRecord(e){if(!confirm("刪除此紀錄?"))return;let t=getHistoryFromStorage();t=t.filter(t=>t.id!==e),localStorage.setItem("ot_history",JSON.stringify(t)),loadHistory()}function clearAllData(){confirm("警告：刪除所有紀錄？")&&(localStorage.removeItem("ot_history"),loadHistory())}function loadHistory(){const e=getHistoryFromStorage();elHistoryList.innerHTML="",currentTotalHours=0,0===e.length?elHistoryList.innerHTML='<div class="text-center text-skin-muted py-8 font-main text-sm">[NO RECORDS]</div>':e.forEach(e=>{currentTotalHours+=e.ot;const t=document.createElement("div"),n="早班"===e.shift?"border-l-skin-accent":"border-l-skin-accent",a="早班"===e.shift?'<i class="fa-regular fa-sun"></i>':'<i class="fa-solid fa-moon"></i>';t.className=`theme-card p-3 flex justify-between items-center relative group border-l-4 ${n}`,t.innerHTML=`<div><div class="text-xs text-skin-muted font-main mb-1">${e.date} <span class="ml-2">${a} ${e.shift}</span></div><div class="text-skin-text font-bold text-base font-display">${e.timeRange||e.time}</div></div><div class="flex items-center gap-4"><div class="text-right"><div class="text-2xl font-bold font-display text-skin-text">+${e.ot.toFixed(1)}</div><div class="text-[10px] text-skin-muted uppercase">Hours</div></div><button onclick="deleteRecord(${e.id})" class="text-skin-muted hover:text-red-500 transition-colors p-2"><i class="fa-solid fa-trash"></i></button></div>`,elHistoryList.appendChild(t)}),elTotalHours.textContent=currentTotalHours.toFixed(1),updateTotalMoneyDisplay()}function showToastMessage(e){elToast.textContent=e,elToast.classList.remove("opacity-0"),elToast.classList.add("opacity-100"),setTimeout((()=>{elToast.classList.remove("opacity-100"),elToast.classList.add("opacity-0")}),2e3)}function showToast(){showToastMessage("DATA SAVED")}
 
-        function adjustFontSize(delta) {
-            currentZoom += delta;
-            if (currentZoom < 80) currentZoom = 80; // Min limit
-            if (currentZoom > 130) currentZoom = 130; // Max limit
-            applyFontSize();
-            localStorage.setItem('app_fontsize', currentZoom);
-            showToastMessage(`Zoom: ${currentZoom}%`);
-        }
-
-        function applyFontSize() {
-            document.documentElement.style.fontSize = `${currentZoom}%`;
-        }
-
-        // --- Theme Manager ---
-        const THEMES = ['cyber', 'ios', 'tactical'];
-        const THEME_NAMES = ['Cyberpunk', 'iOS Minimal', 'Tactical Ops'];
-        let currentThemeIndex = 0;
-
-        function initTheme() {
-            const savedTheme = localStorage.getItem('app_theme');
-            if (savedTheme && THEMES.includes(savedTheme)) {
-                currentThemeIndex = THEMES.indexOf(savedTheme);
-            }
-            applyTheme();
-        }
-
-        function toggleTheme() {
-            currentThemeIndex = (currentThemeIndex + 1) % THEMES.length;
-            applyTheme();
-            showToastMessage(`Switched to: ${THEME_NAMES[currentThemeIndex]}`);
-        }
-
-        function applyTheme() {
-            const theme = THEMES[currentThemeIndex];
-            document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('app_theme', theme);
-        }
-
-        // --- Config & Constants ---
-        const STANDARD_MORNING_END = "17:30";
-        const STANDARD_NIGHT_END = "03:00"; 
-        const STORAGE_KEY = 'ot_history';
-        const SETTING_AUTO_BACKUP = 'setting_auto_backup';
-        const SETTING_HOURLY_RATE = 'setting_hourly_rate';
-        
-        // --- DOM Elements ---
-        const elDate = document.getElementById('workDate');
-        const elShiftMorning = document.getElementById('shiftMorning');
-        const elShiftNight = document.getElementById('shiftNight');
-        const elStartTime = document.getElementById('startTime');
-        const elEndTime = document.getElementById('endTime');
-        const elPreview = document.getElementById('previewHours');
-        const elPreviewPay = document.getElementById('previewPay');
-        const elHourlyRate = document.getElementById('hourlyRate');
-        const elStatus = document.getElementById('statusText');
-        const elSaveBtn = document.getElementById('btnSave');
-        const elHistoryList = document.getElementById('historyList');
-        const elTotalHours = document.getElementById('totalHours');
-        const elTotalMoney = document.getElementById('totalMoney');
-        const elToast = document.getElementById('toast');
-        const elCrossDayBadge = document.getElementById('crossDayBadge');
-        const elQuickBtn = document.getElementById('btnQuickClockOut');
-        const elFileInput = document.getElementById('fileInput');
-        const elAutoBackupToggle = document.getElementById('autoBackupToggle');
-        const elPasteModal = document.getElementById('pasteModal');
-        const elPasteInput = document.getElementById('pasteInput');
-
-        let currentTotalHours = 0;
-
-        // --- Init ---
-        initFontSize();
-        initTheme();
-        elDate.valueAsDate = new Date();
-        
-        const savedAutoBackup = localStorage.getItem(SETTING_AUTO_BACKUP);
-        elAutoBackupToggle.checked = savedAutoBackup === 'true';
-
-        const savedRate = localStorage.getItem(SETTING_HOURLY_RATE);
-        if(savedRate) elHourlyRate.value = savedRate;
-
-        loadHistory();
-        resetStartTime(); 
-
-        // --- Event Listeners ---
-        ['input', 'change', 'blur'].forEach(evt => {
-            elEndTime.addEventListener(evt, updateCalculation);
-            elStartTime.addEventListener(evt, updateCalculation);
-            elHourlyRate.addEventListener(evt, updateCalculation);
-        });
-        
-        elHourlyRate.addEventListener('input', () => {
-             updateCalculation();
-             updateTotalMoneyDisplay();
-        });
-        elHourlyRate.addEventListener('change', () => {
-             localStorage.setItem(SETTING_HOURLY_RATE, elHourlyRate.value);
-             updateTotalMoneyDisplay();
-        });
-        
-        elShiftMorning.addEventListener('change', handleShiftChange);
-        elShiftNight.addEventListener('change', handleShiftChange);
-        elSaveBtn.addEventListener('click', saveRecord);
-        elQuickBtn.addEventListener('click', quickClockOut);
-        
-        elAutoBackupToggle.addEventListener('change', () => {
-            localStorage.setItem(SETTING_AUTO_BACKUP, elAutoBackupToggle.checked);
-        });
-
-        // --- Logic ---
-        function quickClockOut() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const timeStr = `${hours}:${minutes}`;
-            const h = now.getHours();
-            let isMorning = true;
-            if (h < 12) { isMorning = false; }
-            if (isMorning) {
-                elShiftMorning.checked = true;
-                elDate.valueAsDate = now;
-            } else {
-                elShiftNight.checked = true;
-                const yesterday = new Date(now);
-                yesterday.setDate(yesterday.getDate() - 1);
-                elDate.valueAsDate = yesterday;
-            }
-            resetStartTime(); 
-            elEndTime.value = timeStr; 
-            updateCalculation();
-            showToastMessage("已帶入現在時間");
-        }
-
-        function handleShiftChange() {
-            resetStartTime();
-            updateCalculation();
-        }
-
-        function resetStartTime() {
-            const defaultTime = elShiftMorning.checked ? STANDARD_MORNING_END : STANDARD_NIGHT_END;
-            elStartTime.value = defaultTime;
-            updateCalculation();
-        }
-
-        function timeToMinutes(timeStr) {
-            const [h, m] = timeStr.split(':').map(Number);
-            return h * 60 + m;
-        }
-
-        function calculateDiffMinutes(startStr, endStr) {
-            if (!startStr || !endStr) return 0;
-            const startMins = timeToMinutes(startStr);
-            const endMins = timeToMinutes(endStr);
-            let diff = endMins - startMins;
-            let isCrossDay = false;
-            if (diff < 0) { diff += 1440; isCrossDay = true; }
-            if (isCrossDay) { elCrossDayBadge.classList.remove('hidden'); } else { elCrossDayBadge.classList.add('hidden'); }
-            return diff;
-        }
-
-        function calculateOvertimeHours(diffMinutes) {
-            if (diffMinutes <= 0) return 0;
-            const hours = Math.floor(diffMinutes / 60);
-            const remainder = diffMinutes % 60;
-            let extra = 0;
-            if (remainder <= 20) extra = 0;
-            else if (remainder <= 50) extra = 0.5;
-            else extra = 1.0;
-            return hours + extra;
-        }
-
-        function updateCalculation() {
-            const startVal = elStartTime.value;
-            const endVal = elEndTime.value;
-            const rate = parseFloat(elHourlyRate.value) || 0;
-            if (!endVal || !startVal) {
-                elPreview.textContent = "0.0"; elPreviewPay.textContent = "$0"; elStatus.textContent = "Waiting for input..."; elCrossDayBadge.classList.add('hidden'); return;
-            }
-            const diff = calculateDiffMinutes(startVal, endVal);
-            const ot = diff > 0 ? calculateOvertimeHours(diff) : 0;
-            const pay = Math.round(ot * rate);
-            elPreview.textContent = ot.toFixed(1);
-            elPreviewPay.textContent = `$${pay.toLocaleString()}`;
-            if (diff <= 0) {
-                elStatus.textContent = `時數不足`; elStatus.className = "text-right text-[10px] text-skin-muted mt-1";
-            } else {
-                elStatus.innerHTML = `總計 <span class="text-skin-accent">${diff}</span> 分鐘`; elStatus.className = "text-right text-[10px] text-skin-muted mt-1";
-            }
-        }
-        
-        function updateTotalMoneyDisplay() {
-            const rate = parseFloat(elHourlyRate.value) || 0;
-            const totalMoney = Math.round(currentTotalHours * rate);
-            elTotalMoney.textContent = `$${totalMoney.toLocaleString()}`;
-        }
-
-        async function saveRecord() {
-            const date = elDate.value;
-            const start = elStartTime.value;
-            const end = elEndTime.value;
-            const shift = elShiftMorning.checked ? '早班' : '晚班';
-            const ot = parseFloat(elPreview.textContent);
-            const rate = parseFloat(elHourlyRate.value) || 0;
-            const pay = Math.round(ot * rate);
-            if (!date || !start || !end) { alert("請完整填寫時間"); return; }
-            const record = { id: Date.now(), date, timeRange: `${start} - ${end}`, shift, ot, rate, pay };
-            let history = getHistoryFromStorage();
-            history = history.filter(item => !(item.date === date && item.shift === shift));
-            history.unshift(record);
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
-                loadHistory();
-                if (elAutoBackupToggle.checked) {
-                    await exportData(true);
-                    showToastMessage("SAVED"); 
-                } else {
-                    showToast();
-                }
-            } catch (e) { alert("儲存失敗"); }
-        }
-
-        function getHistoryFromStorage() {
-            try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch (e) { return []; }
-        }
-
-        // Export Logic with Fix for "text.txt" - REMOVED 'text' property
-        async function exportData(isAuto = false) {
+        // --- NEW: Report & CSV Logic ---
+        function openReportModal() {
             const data = getHistoryFromStorage();
-            if (data.length === 0) { if(!isAuto) alert("無資料"); return; }
+            if(data.length === 0) { alert("沒有資料可生成報表"); return; }
             
-            const fileName = "OT_Backup.json";
-            const file = new File([JSON.stringify(data)], fileName, {type: "application/json"});
+            const tbody = document.getElementById('reportTableBody');
+            tbody.innerHTML = '';
+            
+            let totalHrs = 0;
+            const currentRate = parseFloat(elHourlyRate.value) || 0;
 
-            if (!isAuto && navigator.canShare && navigator.canShare({ files: [file] })) {
-                try {
-                    await navigator.share({
-                        files: [file]
-                        // Strictly NO title or text here to prevent iOS txt conversion
-                    });
-                    return; 
-                } catch (err) {
-                    console.log("Share failed or cancelled");
-                }
-            }
+            // Sort by Date Ascending for report
+            const sorted = [...data].sort((a,b) => new Date(a.date) - new Date(b.date));
 
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
-            const dlNode = document.createElement('a');
-            dlNode.setAttribute("href", dataStr);
-            dlNode.setAttribute("download", fileName);
-            document.body.appendChild(dlNode); 
-            dlNode.click();
-            dlNode.remove();
+            sorted.forEach(item => {
+                totalHrs += item.ot;
+                const estPay = Math.round(item.ot * currentRate);
+                
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-black/10 hover:bg-black/5";
+                tr.innerHTML = `
+                    <td class="py-2 pr-2">${item.date}</td>
+                    <td class="py-2 pr-2">${item.shift}</td>
+                    <td class="py-2 pr-2">${item.timeRange || item.time}</td>
+                    <td class="py-2 pl-2 text-right font-bold">${item.ot.toFixed(1)}</td>
+                    <td class="py-2 pl-2 text-right text-gray-600">$${estPay.toLocaleString()}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('reportTotalHours').textContent = totalHrs.toFixed(1);
+            document.getElementById('reportRate').textContent = `$${currentRate}`;
+            document.getElementById('reportTotalMoney').textContent = `$${Math.round(totalHrs * currentRate).toLocaleString()}`;
+            document.getElementById('reportId').textContent = Math.floor(Math.random()*100000).toString().padStart(6,'0');
+
+            document.getElementById('reportModal').classList.remove('hidden');
         }
 
-        // Copy / Paste Logic
-        function copyDataToClipboard() {
+        function closeReportModal() {
+            document.getElementById('reportModal').classList.add('hidden');
+        }
+
+        function downloadCSV() {
             const data = getHistoryFromStorage();
-            if (data.length === 0) { alert("無資料"); return; }
-            const str = JSON.stringify(data);
+            if(data.length === 0) return;
             
-            // Clipboard API might be restricted in iframes or non-secure contexts, fallback to execCommand
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(str).then(() => showToastMessage("COPIED"));
-            } else {
-                const textArea = document.createElement("textarea");
-                textArea.value = str;
-                textArea.style.position = "fixed";
-                document.body.appendChild(textArea);
-                textArea.focus();
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    showToastMessage("COPIED");
-                } catch (err) {
-                    alert("複製失敗");
-                }
-                document.body.removeChild(textArea);
-            }
-        }
-
-        function openPasteModal() {
-            elPasteInput.value = '';
-            elPasteModal.classList.remove('hidden');
-        }
-
-        function closePasteModal() {
-            elPasteModal.classList.add('hidden');
-        }
-
-        function restoreFromPaste() {
-            const str = elPasteInput.value.trim();
-            if(!str) return;
+            const rate = parseFloat(elHourlyRate.value) || 0;
+            // CSV Header
+            let csvContent = "\uFEFFDate,Shift,Time,Hours,Rate,Est.Pay\n"; // BOM for Excel
             
-            try {
-                const json = JSON.parse(str);
-                if (Array.isArray(json)) {
-                    if(confirm(`匯入 ${json.length} 筆資料？`)) {
-                        const current = getHistoryFromStorage();
-                        const merged = [...json, ...current];
-                        const unique = Array.from(new Map(merged.map(item => [item.id, item])).values());
-                        unique.sort((a, b) => b.id - a.id);
-                        localStorage.setItem(STORAGE_KEY, JSON.stringify(unique));
-                        loadHistory();
-                        closePasteModal();
-                        showToastMessage("匯入成功");
-                    }
-                } else { alert("格式錯誤"); }
-            } catch(e) {
-                alert("無效的資料格式");
-            }
+            // Sort by Date Ascending
+            const sorted = [...data].sort((a,b) => new Date(a.date) - new Date(b.date));
+
+            sorted.forEach(row => {
+                const pay = Math.round(row.ot * rate);
+                // Handle commas in timeRange if any, though unlikely
+                const time = (row.timeRange || row.time).replace(/,/g, " "); 
+                csvContent += `${row.date},${row.shift},${time},${row.ot},${rate},${pay}\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `OT_Report_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
-
-        function triggerImport() { elFileInput.click(); }
-
-        function importData(input) {
-            const file = input.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const json = JSON.parse(e.target.result);
-                    if (Array.isArray(json)) {
-                        if(confirm(`匯入 ${json.length} 筆資料？(將合併現有資料)`)) {
-                            const current = getHistoryFromStorage();
-                            const merged = [...json, ...current];
-                            const unique = Array.from(new Map(merged.map(item => [item.id, item])).values());
-                            unique.sort((a, b) => b.id - a.id);
-                            localStorage.setItem(STORAGE_KEY, JSON.stringify(unique));
-                            loadHistory();
-                            showToastMessage("匯入成功");
-                        }
-                    } else { alert("格式錯誤"); }
-                } catch (err) { alert("讀取失敗"); }
-            };
-            reader.readAsText(file);
-            input.value = '';
-        }
-
-        function deleteRecord(id) {
-            if(!confirm("刪除此紀錄?")) return;
-            let history = getHistoryFromStorage();
-            history = history.filter(item => item.id !== id);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
-            loadHistory();
-        }
-
-        function clearAllData() {
-            if(confirm("警告：刪除所有紀錄？")) {
-                localStorage.removeItem(STORAGE_KEY);
-                loadHistory();
-            }
-        }
-
-        function loadHistory() {
-            const history = getHistoryFromStorage();
-            elHistoryList.innerHTML = '';
-            currentTotalHours = 0;
-            if (history.length === 0) {
-                elHistoryList.innerHTML = '<div class="text-center text-skin-muted py-8 font-main text-sm">[NO RECORDS]</div>';
-            } else {
-                history.forEach(item => {
-                    currentTotalHours += item.ot;
-                    const el = document.createElement('div');
-                    const accentClass = item.shift === '早班' ? 'border-l-skin-accent' : 'border-l-skin-accent'; 
-                    const icon = item.shift === '早班' ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
-                    el.className = `theme-card p-3 flex justify-between items-center relative group border-l-4 ${accentClass}`;
-                    el.innerHTML = `
-                        <div>
-                            <div class="text-xs text-skin-muted font-main mb-1">${item.date} <span class="ml-2">${icon} ${item.shift}</span></div>
-                            <div class="text-skin-text font-bold text-base font-display">${item.timeRange || item.time}</div>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <div class="text-right">
-                                <div class="text-2xl font-bold font-display text-skin-text">+${item.ot.toFixed(1)}</div>
-                                <div class="text-[10px] text-skin-muted uppercase">Hours</div>
-                            </div>
-                            <button onclick="deleteRecord(${item.id})" class="text-skin-muted hover:text-red-500 transition-colors p-2"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    `;
-                    elHistoryList.appendChild(el);
-                });
-            }
-            elTotalHours.textContent = currentTotalHours.toFixed(1);
-            updateTotalMoneyDisplay();
-        }
-
-        function showToastMessage(msg) {
-            elToast.textContent = msg;
-            elToast.classList.remove('opacity-0');
-            elToast.classList.add('opacity-100');
-            setTimeout(() => {
-                elToast.classList.remove('opacity-100');
-                elToast.classList.add('opacity-0');
-            }, 2000);
-        }
-
-        function showToast() { showToastMessage("DATA SAVED"); }
-
     </script>
+    <style>
+        @media print {
+            body * { visibility: hidden; }
+            #reportModal, #reportModal * { visibility: visible; }
+            #reportModal { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: white; color: black; overflow: visible; }
+            .secret-paper { box-shadow: none; border: none; }
+            .no-print { display: none; }
+        }
+    </style>
 </body>
 </html>
