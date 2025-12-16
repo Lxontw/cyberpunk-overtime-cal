@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- iOS Web App Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="OT Calc">
+    
+    <title>CyberPunk Overtime Calc</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts: Orbitron & Rajdhani -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Custom Config & Styles -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            black: '#050505',
+                            dark: '#0a0a0f',
+                            panel: '#12121a',
+                            cyan: '#00f3ff',
+                            pink: '#ff00ff',
+                            yellow: '#fcee0a',
+                            green: '#0aff0a',
+                            dim: 'rgba(255,255,255,0.1)'
+                        }
+                    },
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        rajdhani: ['Rajdhani', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #050505;
+            color: #e0e0e0;
+            font-family: 'Rajdhani', sans-serif;
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 0, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* Neon Glow Effects */
+        .neon-text-cyan {
+            text-shadow: 0 0 5px rgba(0, 243, 255, 0.7), 0 0 10px rgba(0, 243, 255, 0.5);
+        }
+        .neon-text-pink {
+            text-shadow: 0 0 5px rgba(255, 0, 255, 0.7), 0 0 10px rgba(255, 0, 255, 0.5);
+        }
+        
+        .cyber-card {
+            background: rgba(18, 18, 26, 0.95);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            clip-path: polygon(
+                0 0, 
+                100% 0, 
+                100% calc(100% - 20px), 
+                calc(100% - 20px) 100%, 
+                0 100%
+            );
+        }
+
+        .cyber-input {
+            background: #0a0a0f;
+            border: 1px solid #333;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+        .cyber-input:focus {
+            outline: none;
+            border-color: #00f3ff;
+            box-shadow: 0 0 8px rgba(0, 243, 255, 0.4);
+        }
+        
+        .cyber-input-pink:focus {
+            border-color: #ff00ff;
+            box-shadow: 0 0 8px rgba(255, 0, 255, 0.4);
+        }
+
+        .btn-cyan {
+            background: linear-gradient(45deg, transparent 5%, #00f3ff 5%);
+            color: #000;
+            box-shadow: 6px 0px 0px #00a8b0;
+            transition: all 0.2s;
+        }
+        .btn-cyan:active {
+            box-shadow: 2px 0px 0px #00a8b0;
+            transform: translateX(4px);
+        }
+
+        .btn-flash {
+            background: rgba(10, 255, 10, 0.1);
+            border: 1px solid #0aff0a;
+            color: #0aff0a;
+            box-shadow: 0 0 10px rgba(10, 255, 10, 0.2);
+            transition: all 0.3s;
+        }
+        .btn-flash:active {
+            background: rgba(10, 255, 10, 0.3);
+            box-shadow: 0 0 20px rgba(10, 255, 10, 0.6);
+            transform: scale(0.98);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0f; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f3ff; 
+        }
+
+        /* Radio Button Styling */
+        input[type="radio"]:checked + label {
+            background-color: rgba(0, 243, 255, 0.1);
+            border-color: #00f3ff;
+            color: #00f3ff;
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+        }
+
+        /* File Input Hidden */
+        #fileInput {
+            display: none;
+        }
+        
+        /* Toggle Switch */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #00f3ff;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #00f3ff;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-20">
+
+    <!-- Header -->
+    <header class="p-4 border-b border-gray-800 bg-cyber-dark sticky top-0 z-50">
+        <div class="flex justify-between items-center max-w-md mx-auto">
+            <h1 class="text-2xl font-orbitron font-bold italic tracking-wider">
+                <span class="text-cyber-cyan neon-text-cyan">OVER</span><span class="text-white">TIME</span>
+                <span class="text-xs block text-cyber-pink font-rajdhani tracking-[0.3em] not-italic neon-text-pink">CALCULATOR v1.6</span>
+            </h1>
+            <div class="text-cyber-yellow text-xl">
+                <i class="fa-solid fa-bolt"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto p-4 space-y-6">
+
+        <!-- Input Section -->
+        <section class="cyber-card p-6 relative">
+            <div class="absolute top-0 right-0 p-2 opacity-50 text-cyber-cyan text-xs font-mono">SYS.INPUT</div>
+            
+            <!-- Quick Clock Out Button -->
+            <button id="btnQuickClockOut" class="w-full btn-flash py-3 rounded mb-6 font-bold font-rajdhani text-lg uppercase tracking-wider flex items-center justify-center gap-2 group">
+                <i class="fa-solid fa-fingerprint group-hover:scale-110 transition-transform"></i> 
+                <span>一鍵下班 (Auto Fill)</span>
+            </button>
+
+            <!-- Date Input -->
+            <div class="mb-5">
+                <label class="block text-cyber-cyan text-sm font-bold mb-2 uppercase tracking-wide">
+                    <i class="fa-regular fa-calendar-days mr-2"></i>Work Date
+                </label>
+                <input type="date" id="workDate" class="cyber-input w-full p-3 rounded text-lg font-mono">
+            </div>
+
+            <!-- Shift Selection -->
+            <div class="mb-5">
+                <label class="block text-cyber-cyan text-sm font-bold mb-2 uppercase tracking-wide">
+                    <i class="fa-solid fa-briefcase mr-2"></i>Shift Type
+                </label>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <input type="radio" name="shift" id="shiftMorning" value="morning" class="hidden" checked>
+                        <label for="shiftMorning" class="cursor-pointer block border border-gray-700 rounded p-3 text-center transition-all">
+                            <div class="font-bold text-lg"><i class="fa-regular fa-sun mr-1"></i> 早班</div>
+                            <div class="text-xs text-gray-400 mt-1">08:30 - 17:30</div>
+                        </label>
+                    </div>
+                    <div>
+                        <input type="radio" name="shift" id="shiftNight" value="night" class="hidden">
+                        <label for="shiftNight" class="cursor-pointer block border border-gray-700 rounded p-3 text-center transition-all">
+                            <div class="font-bold text-lg"><i class="fa-solid fa-moon mr-1"></i> 晚班</div>
+                            <div class="text-xs text-gray-400 mt-1">20:00 - 03:00</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Time Span Input (Start & End) -->
+            <div class="mb-6 bg-gray-900/50 p-3 rounded border border-gray-800">
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-cyber-cyan text-sm font-bold uppercase tracking-wide">
+                        <i class="fa-solid fa-stopwatch mr-2"></i>OT Period
+                    </label>
+                    <button onclick="resetStartTime()" class="text-xs text-gray-500 hover:text-cyber-cyan underline decoration-dotted">
+                        重置預設
+                    </button>
+                </div>
+                
+                <div class="flex items-center gap-2">
+                    <!-- Start Time -->
+                    <div class="flex-1">
+                        <div class="text-[10px] text-gray-400 mb-1 uppercase text-center">Start (起始)</div>
+                        <input type="time" id="startTime" class="cyber-input w-full p-2 rounded text-xl font-mono text-center text-cyber-cyan border-cyber-cyan/30">
+                    </div>
+                    
+                    <!-- Arrow -->
+                    <div class="text-gray-500 pt-5">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+
+                    <!-- End Time -->
+                    <div class="flex-1">
+                        <div class="text-[10px] text-gray-400 mb-1 uppercase text-center">End (打卡)</div>
+                        <input type="time" id="endTime" class="cyber-input cyber-input-pink w-full p-2 rounded text-xl font-mono text-center text-cyber-pink border-cyber-pink/30">
+                    </div>
+                </div>
+                <div class="text-right mt-1">
+                     <span id="crossDayBadge" class="hidden text-[10px] bg-cyber-pink text-black px-1 rounded font-bold">NEXT DAY +1</span>
+                </div>
+            </div>
+
+            <!-- Live Preview -->
+            <div class="bg-black/40 rounded p-4 mb-6 border-l-4 border-cyber-pink">
+                <div class="flex justify-between items-end">
+                    <div>
+                        <div class="text-gray-400 text-xs uppercase mb-1">Calculation</div>
+                        <div id="statusText" class="text-sm text-gray-300">請輸入打卡時間</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-4xl font-bold font-mono text-white neon-text-pink" id="previewHours">0.0</div>
+                        <div class="text-xs text-cyber-pink uppercase">Hours Added</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Auto Backup Toggle & Save -->
+            <div class="flex items-center justify-end mb-3 gap-2">
+                <label class="inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="autoBackupToggle" class="sr-only peer">
+                    <div class="relative w-9 h-5 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-cyber-green"></div>
+                    <span class="ms-2 text-xs text-gray-400 font-mono hover:text-white transition-colors">自動下載備份 (Auto-DL)</span>
+                </label>
+            </div>
+
+            <!-- Action Buttons -->
+            <button id="btnSave" class="btn-cyan w-full py-4 font-bold font-orbitron text-lg uppercase tracking-wider">
+                Confirm & Save
+            </button>
+        </section>
+
+        <!-- Stats & History Section -->
+        <section>
+            <div class="flex justify-between items-end mb-4">
+                <div>
+                    <h2 class="text-cyber-cyan font-bold text-lg border-b-2 border-cyber-cyan px-2 inline-block">LOG_HISTORY</h2>
+                    <div class="text-gray-400 text-sm font-mono mt-1">
+                        Total: <span id="totalHours" class="text-white font-bold">0.0</span> Hrs
+                    </div>
+                </div>
+                <!-- Backup Tools -->
+                <div class="flex gap-2">
+                    <button onclick="exportData()" class="text-xs bg-gray-800 text-cyber-cyan border border-cyber-cyan px-2 py-1 rounded hover:bg-cyber-cyan hover:text-black transition-colors" title="手動匯出">
+                        <i class="fa-solid fa-download"></i> 備份
+                    </button>
+                    <button onclick="triggerImport()" class="text-xs bg-gray-800 text-cyber-pink border border-cyber-pink px-2 py-1 rounded hover:bg-cyber-pink hover:text-black transition-colors" title="匯入還原">
+                        <i class="fa-solid fa-upload"></i> 還原
+                    </button>
+                    <input type="file" id="fileInput" accept=".json" onchange="importData(this)">
+                </div>
+            </div>
+
+            <div id="historyList" class="space-y-3 pb-10">
+                <!-- JS will inject items here -->
+                <div class="text-center text-gray-600 py-8 font-mono text-sm">No records found in database.</div>
+            </div>
+
+            <button onclick="clearAllData()" class="w-full text-xs text-gray-600 hover:text-red-500 mt-8 font-mono border border-gray-800 hover:border-red-900 p-2 rounded transition-colors">
+                [SYSTEM] CLEAR_MEMORY
+            </button>
+        </section>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-cyber-pink text-white px-6 py-3 rounded shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-50 font-bold tracking-wide text-sm whitespace-nowrap">
+        DATA SAVED
+    </div>
+
+    <script>
+        // --- Configuration & Constants ---
+        const STANDARD_MORNING_END = "17:30";
+        const STANDARD_NIGHT_END = "03:00"; // Next day
+        const STORAGE_KEY = 'ot_history';
+        const SETTING_AUTO_BACKUP = 'setting_auto_backup';
+        
+        // --- DOM Elements ---
+        const elDate = document.getElementById('workDate');
+        const elShiftMorning = document.getElementById('shiftMorning');
+        const elShiftNight = document.getElementById('shiftNight');
+        const elStartTime = document.getElementById('startTime');
+        const elEndTime = document.getElementById('endTime');
+        const elPreview = document.getElementById('previewHours');
+        const elStatus = document.getElementById('statusText');
+        const elSaveBtn = document.getElementById('btnSave');
+        const elHistoryList = document.getElementById('historyList');
+        const elTotalHours = document.getElementById('totalHours');
+        const elToast = document.getElementById('toast');
+        const elCrossDayBadge = document.getElementById('crossDayBadge');
+        const elQuickBtn = document.getElementById('btnQuickClockOut');
+        const elFileInput = document.getElementById('fileInput');
+        const elAutoBackupToggle = document.getElementById('autoBackupToggle');
+
+        // --- Init ---
+        // Set default date to today
+        elDate.valueAsDate = new Date();
+        loadHistory();
+        resetStartTime(); 
+        
+        // Load Settings
+        const savedAutoBackup = localStorage.getItem(SETTING_AUTO_BACKUP);
+        elAutoBackupToggle.checked = savedAutoBackup === 'true';
+
+        // --- Event Listeners ---
+        ['input', 'change', 'blur'].forEach(evt => {
+            elEndTime.addEventListener(evt, updateCalculation);
+            elStartTime.addEventListener(evt, updateCalculation);
+        });
+        
+        elShiftMorning.addEventListener('change', handleShiftChange);
+        elShiftNight.addEventListener('change', handleShiftChange);
+        elSaveBtn.addEventListener('click', saveRecord);
+        elQuickBtn.addEventListener('click', quickClockOut);
+        
+        // Save settings change
+        elAutoBackupToggle.addEventListener('change', () => {
+            localStorage.setItem(SETTING_AUTO_BACKUP, elAutoBackupToggle.checked);
+        });
+
+        // --- Core Logic ---
+
+        function quickClockOut() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const timeStr = `${hours}:${minutes}`;
+            
+            const h = now.getHours();
+            let isMorning = true;
+
+            if (h < 12) {
+                isMorning = false; // Night Shift
+            }
+
+            if (isMorning) {
+                elShiftMorning.checked = true;
+                elDate.valueAsDate = now;
+            } else {
+                elShiftNight.checked = true;
+                const yesterday = new Date(now);
+                yesterday.setDate(yesterday.getDate() - 1);
+                elDate.valueAsDate = yesterday;
+            }
+
+            resetStartTime(); 
+            elEndTime.value = timeStr; 
+            updateCalculation();
+            showToastMessage("已帶入現在時間");
+        }
+
+        function handleShiftChange() {
+            resetStartTime();
+            updateCalculation();
+        }
+
+        function resetStartTime() {
+            const defaultTime = elShiftMorning.checked ? STANDARD_MORNING_END : STANDARD_NIGHT_END;
+            elStartTime.value = defaultTime;
+            updateCalculation();
+        }
+
+        function timeToMinutes(timeStr) {
+            const [h, m] = timeStr.split(':').map(Number);
+            return h * 60 + m;
+        }
+
+        function calculateDiffMinutes(startStr, endStr) {
+            if (!startStr || !endStr) return 0;
+
+            const startMins = timeToMinutes(startStr);
+            const endMins = timeToMinutes(endStr);
+            
+            let diff = endMins - startMins;
+            let isCrossDay = false;
+
+            if (diff < 0) {
+                diff += 1440;
+                isCrossDay = true;
+            }
+
+            if (isCrossDay) {
+                elCrossDayBadge.classList.remove('hidden');
+            } else {
+                elCrossDayBadge.classList.add('hidden');
+            }
+
+            return diff;
+        }
+
+        function calculateOvertimeHours(diffMinutes) {
+            if (diffMinutes <= 0) return 0;
+
+            const hours = Math.floor(diffMinutes / 60);
+            const remainder = diffMinutes % 60;
+            
+            let extra = 0;
+            if (remainder <= 20) {
+                extra = 0;
+            } else if (remainder <= 50) {
+                extra = 0.5;
+            } else {
+                extra = 1.0;
+            }
+
+            return hours + extra;
+        }
+
+        function updateCalculation() {
+            const startVal = elStartTime.value;
+            const endVal = elEndTime.value;
+
+            if (!endVal || !startVal) {
+                elPreview.textContent = "0.0";
+                elStatus.textContent = "Waiting for input...";
+                elCrossDayBadge.classList.add('hidden');
+                return;
+            }
+
+            const diff = calculateDiffMinutes(startVal, endVal);
+            const ot = diff > 0 ? calculateOvertimeHours(diff) : 0;
+
+            elPreview.textContent = ot.toFixed(1);
+            
+            if (diff <= 0) {
+                elStatus.textContent = `時數不足`;
+                elStatus.className = "text-sm text-gray-500";
+            } else {
+                elStatus.innerHTML = `總計 <span class="text-cyber-cyan">${diff}</span> 分鐘`;
+                elStatus.className = "text-sm text-gray-300";
+            }
+        }
+
+        // --- Data Management & Backup ---
+
+        function saveRecord() {
+            const date = elDate.value;
+            const start = elStartTime.value;
+            const end = elEndTime.value;
+            const shift = elShiftMorning.checked ? '早班' : '晚班';
+            const ot = parseFloat(elPreview.textContent);
+
+            if (!date || !start || !end) {
+                alert("請完整填寫時間");
+                return;
+            }
+
+            const record = {
+                id: Date.now(),
+                date,
+                timeRange: `${start} - ${end}`,
+                shift,
+                ot
+            };
+
+            const history = getHistoryFromStorage();
+            history.unshift(record);
+            
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+                loadHistory();
+                
+                // Auto Backup Check
+                if (elAutoBackupToggle.checked) {
+                    exportData(true); // true = auto mode
+                    showToastMessage("SAVED & EXPORTED");
+                } else {
+                    showToast();
+                }
+            } catch (e) {
+                alert("儲存失敗！可能是瀏覽器隱私模式或儲存空間不足。");
+            }
+        }
+
+        function getHistoryFromStorage() {
+            try {
+                const data = localStorage.getItem(STORAGE_KEY);
+                return data ? JSON.parse(data) : [];
+            } catch (e) {
+                console.error("Storage access error", e);
+                return [];
+            }
+        }
+
+        function exportData(isAuto = false) {
+            const data = getHistoryFromStorage();
+            if (data.length === 0) {
+                if(!isAuto) alert("目前沒有資料可供備份");
+                return;
+            }
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            
+            const dateStr = new Date().toISOString().split('T')[0];
+            const prefix = isAuto ? "OT_AutoBackup" : "OT_Backup";
+            downloadAnchorNode.setAttribute("download", `${prefix}_${dateStr}.json`);
+            
+            document.body.appendChild(downloadAnchorNode); 
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+        function triggerImport() {
+            elFileInput.click();
+        }
+
+        function importData(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const json = JSON.parse(e.target.result);
+                    if (Array.isArray(json)) {
+                        if(confirm(`確定要匯入 ${json.length} 筆資料嗎？這將覆蓋現有資料（或您可以選擇合併）。\n按「確定」= 合併 (保留現有)\n按「取消」= 取消操作`)) {
+                            // Merge Strategy: Combine and remove duplicates by ID
+                            const current = getHistoryFromStorage();
+                            const merged = [...json, ...current];
+                            // Dedup based on ID
+                            const unique = Array.from(new Map(merged.map(item => [item.id, item])).values());
+                            // Sort by ID desc (newest first)
+                            unique.sort((a, b) => b.id - a.id);
+                            
+                            localStorage.setItem(STORAGE_KEY, JSON.stringify(unique));
+                            loadHistory();
+                            showToastMessage("匯入成功！");
+                        }
+                    } else {
+                        alert("檔案格式錯誤");
+                    }
+                } catch (err) {
+                    alert("檔案讀取失敗，請確認檔案是否正確。");
+                }
+            };
+            reader.readAsText(file);
+            input.value = ''; // Reset
+        }
+
+        function deleteRecord(id) {
+            if(!confirm("確定刪除此紀錄?")) return;
+            let history = getHistoryFromStorage();
+            history = history.filter(item => item.id !== id);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+            loadHistory();
+        }
+
+        function clearAllData() {
+            if(confirm("警告：這將刪除所有紀錄，無法復原。確定執行？")) {
+                localStorage.removeItem(STORAGE_KEY);
+                loadHistory();
+            }
+        }
+
+        function loadHistory() {
+            const history = getHistoryFromStorage();
+            elHistoryList.innerHTML = '';
+            
+            let total = 0;
+
+            if (history.length === 0) {
+                elHistoryList.innerHTML = '<div class="text-center text-gray-600 py-8 font-mono text-sm">[DATABASE_EMPTY]</div>';
+            } else {
+                history.forEach(item => {
+                    total += item.ot;
+                    const el = document.createElement('div');
+                    const accentColor = item.shift === '早班' ? 'border-l-cyber-cyan' : 'border-l-cyber-pink';
+                    const icon = item.shift === '早班' ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+                    const displayTime = item.timeRange ? item.timeRange : `End: ${item.time}`;
+
+                    el.className = `bg-cyber-panel border border-gray-800 border-l-4 ${accentColor} p-3 rounded shadow-lg flex justify-between items-center relative group`;
+                    el.innerHTML = `
+                        <div>
+                            <div class="text-xs text-gray-400 font-mono mb-1">${item.date} <span class="ml-2 text-gray-500">${icon} ${item.shift}</span></div>
+                            <div class="text-white font-bold text-base font-rajdhani text-cyber-yellow font-mono">${displayTime}</div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="text-right">
+                                <div class="text-2xl font-bold font-mono ${item.ot > 0 ? 'text-white neon-text-cyan' : 'text-gray-600'}">
+                                    +${item.ot.toFixed(1)}
+                                </div>
+                                <div class="text-[10px] text-gray-500 uppercase">Hours</div>
+                            </div>
+                            <button onclick="deleteRecord(${item.id})" class="text-gray-600 hover:text-red-500 transition-colors p-2">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    elHistoryList.appendChild(el);
+                });
+            }
+
+            elTotalHours.textContent = total.toFixed(1);
+        }
+
+        function showToast() {
+            showToastMessage("DATA SAVED");
+        }
+
+        function showToastMessage(msg) {
+            elToast.textContent = msg;
+            elToast.classList.remove('opacity-0');
+            elToast.classList.add('opacity-100');
+            setTimeout(() => {
+                elToast.classList.remove('opacity-100');
+                elToast.classList.add('opacity-0');
+            }, 2000);
+        }
+
+    </script>
+</body>
+</html>
