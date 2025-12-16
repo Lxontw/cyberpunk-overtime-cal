@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="OT Calc">
     
-    <title>Overtime Calc v2.02</title>
+    <title>Overtime Calc v2.03</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -179,6 +179,13 @@
         .toggle-checkbox:checked + .toggle-label { background-color: var(--color-accent); }
 
         #fileInput { display: none; }
+        
+        /* Modal for Paste Restore */
+        .modal-overlay {
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(4px);
+        }
+        
         * { transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; }
     </style>
 </head>
@@ -187,7 +194,7 @@
     <header class="p-4 border-b border-skin-border sticky top-0 z-50 backdrop-blur-md bg-skin-base/80">
         <div class="flex justify-between items-center max-w-md mx-auto">
             <h1 class="text-2xl font-display font-bold tracking-wider italic">
-                <span class="text-skin-accent">OT</span> CALC <span class="text-xs not-italic text-skin-muted font-main">v2.02</span>
+                <span class="text-skin-accent">OT</span> CALC <span class="text-xs not-italic text-skin-muted font-main">v2.03</span>
             </h1>
             <div class="flex gap-3 items-center">
                 <!-- Font Size Controls -->
@@ -322,12 +329,25 @@
                     </div>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="exportData()" class="text-xs border border-skin-border text-skin-muted px-3 py-1 rounded-theme hover:bg-skin-accent hover:text-skin-base transition-colors">
-                        <i class="fa-solid fa-download"></i> 備份
-                    </button>
-                    <button onclick="triggerImport()" class="text-xs border border-skin-border text-skin-muted px-3 py-1 rounded-theme hover:bg-skin-accent hover:text-skin-base transition-colors">
-                        <i class="fa-solid fa-upload"></i> 還原
-                    </button>
+                    <!-- Backup Group -->
+                    <div class="flex rounded-theme border border-skin-border overflow-hidden">
+                        <button onclick="exportData()" class="text-xs text-skin-muted px-3 py-1 hover:bg-skin-accent hover:text-skin-base transition-colors border-r border-skin-border" title="備份檔案">
+                            <i class="fa-solid fa-file-export"></i> 備份
+                        </button>
+                        <button onclick="copyDataToClipboard()" class="text-xs text-skin-muted px-3 py-1 hover:bg-skin-accent hover:text-skin-base transition-colors" title="複製純文字">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Restore Group -->
+                    <div class="flex rounded-theme border border-skin-border overflow-hidden">
+                        <button onclick="triggerImport()" class="text-xs text-skin-muted px-3 py-1 hover:bg-skin-accent hover:text-skin-base transition-colors border-r border-skin-border" title="還原檔案">
+                            <i class="fa-solid fa-file-import"></i> 還原
+                        </button>
+                        <button onclick="openPasteModal()" class="text-xs text-skin-muted px-3 py-1 hover:bg-skin-accent hover:text-skin-base transition-colors" title="貼上純文字">
+                            <i class="fa-regular fa-paste"></i>
+                        </button>
+                    </div>
                     <input type="file" id="fileInput" accept=".json" onchange="importData(this)">
                 </div>
             </div>
@@ -341,6 +361,18 @@
             </button>
         </section>
     </main>
+
+    <!-- Paste Restore Modal -->
+    <div id="pasteModal" class="fixed inset-0 modal-overlay hidden z-[60] flex items-center justify-center p-4">
+        <div class="theme-card w-full max-w-sm p-6 relative bg-skin-card">
+            <h3 class="text-skin-accent font-bold font-display text-xl mb-4">TEXT RESTORE</h3>
+            <textarea id="pasteInput" class="theme-input w-full h-32 p-3 font-mono text-xs mb-4" placeholder="請在此貼上備份代碼 (Paste backup code here)..."></textarea>
+            <div class="flex gap-2">
+                <button onclick="closePasteModal()" class="flex-1 py-2 border border-skin-border text-skin-muted rounded-theme font-bold">CANCEL</button>
+                <button onclick="restoreFromPaste()" class="flex-1 py-2 theme-btn rounded-theme font-bold">IMPORT</button>
+            </div>
+        </div>
+    </div>
 
     <div id="toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-skin-accent text-skin-base px-6 py-3 rounded-theme shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-50 font-bold tracking-wide text-sm whitespace-nowrap font-display">
         DATA SAVED
@@ -420,6 +452,8 @@
         const elQuickBtn = document.getElementById('btnQuickClockOut');
         const elFileInput = document.getElementById('fileInput');
         const elAutoBackupToggle = document.getElementById('autoBackupToggle');
+        const elPasteModal = document.getElementById('pasteModal');
+        const elPasteInput = document.getElementById('pasteInput');
 
         let currentTotalHours = 0;
 
@@ -589,9 +623,8 @@
             if (!isAuto && navigator.canShare && navigator.canShare({ files: [file] })) {
                 try {
                     await navigator.share({
-                        files: [file],
-                        title: 'OT_Backup.json'
-                        // REMOVED 'text' property to prevent iOS turning it into a note/txt
+                        files: [file]
+                        // Strictly NO title or text here to prevent iOS txt conversion
                     });
                     return; 
                 } catch (err) {
@@ -606,6 +639,64 @@
             document.body.appendChild(dlNode); 
             dlNode.click();
             dlNode.remove();
+        }
+
+        // Copy / Paste Logic
+        function copyDataToClipboard() {
+            const data = getHistoryFromStorage();
+            if (data.length === 0) { alert("無資料"); return; }
+            const str = JSON.stringify(data);
+            
+            // Clipboard API might be restricted in iframes or non-secure contexts, fallback to execCommand
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(str).then(() => showToastMessage("COPIED"));
+            } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = str;
+                textArea.style.position = "fixed";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showToastMessage("COPIED");
+                } catch (err) {
+                    alert("複製失敗");
+                }
+                document.body.removeChild(textArea);
+            }
+        }
+
+        function openPasteModal() {
+            elPasteInput.value = '';
+            elPasteModal.classList.remove('hidden');
+        }
+
+        function closePasteModal() {
+            elPasteModal.classList.add('hidden');
+        }
+
+        function restoreFromPaste() {
+            const str = elPasteInput.value.trim();
+            if(!str) return;
+            
+            try {
+                const json = JSON.parse(str);
+                if (Array.isArray(json)) {
+                    if(confirm(`匯入 ${json.length} 筆資料？`)) {
+                        const current = getHistoryFromStorage();
+                        const merged = [...json, ...current];
+                        const unique = Array.from(new Map(merged.map(item => [item.id, item])).values());
+                        unique.sort((a, b) => b.id - a.id);
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(unique));
+                        loadHistory();
+                        closePasteModal();
+                        showToastMessage("匯入成功");
+                    }
+                } else { alert("格式錯誤"); }
+            } catch(e) {
+                alert("無效的資料格式");
+            }
         }
 
         function triggerImport() { elFileInput.click(); }
