@@ -163,7 +163,7 @@
         <div class="flex justify-between items-center max-w-md mx-auto">
             <h1 class="text-2xl font-orbitron font-bold italic tracking-wider">
                 <span class="text-cyber-cyan neon-text-cyan">OVER</span><span class="text-white">TIME</span>
-                <span class="text-xs block text-cyber-pink font-rajdhani tracking-[0.3em] not-italic neon-text-pink">CALCULATOR v1.7</span>
+                <span class="text-xs block text-cyber-pink font-rajdhani tracking-[0.3em] not-italic neon-text-pink">CALCULATOR v1.9</span>
             </h1>
             <div class="text-cyber-yellow text-xl">
                 <i class="fa-solid fa-bolt"></i>
@@ -208,16 +208,18 @@
                         <i class="fa-solid fa-briefcase mr-2"></i>Shift
                     </label>
                     <div class="flex gap-2">
+                        <!-- Left Side: Morning (Text Only) -->
                         <div class="flex-1">
                             <input type="radio" name="shift" id="shiftMorning" value="morning" class="hidden" checked>
-                            <label for="shiftMorning" class="cursor-pointer block border border-gray-700 rounded p-3 text-center transition-all h-full flex items-center justify-center">
-                                <i class="fa-regular fa-sun text-lg"></i>
+                            <label for="shiftMorning" class="cursor-pointer block border border-gray-700 rounded p-3 text-center transition-all h-full flex items-center justify-center hover:bg-white/5">
+                                <span class="font-bold text-lg">早班</span>
                             </label>
                         </div>
+                        <!-- Right Side: Night (Text Only) -->
                         <div class="flex-1">
                             <input type="radio" name="shift" id="shiftNight" value="night" class="hidden">
-                            <label for="shiftNight" class="cursor-pointer block border border-gray-700 rounded p-3 text-center transition-all h-full flex items-center justify-center">
-                                <i class="fa-solid fa-moon text-lg"></i>
+                            <label for="shiftNight" class="cursor-pointer block border border-gray-700 rounded p-3 text-center transition-all h-full flex items-center justify-center hover:bg-white/5">
+                                <span class="font-bold text-lg">晚班</span>
                             </label>
                         </div>
                     </div>
@@ -580,9 +582,9 @@
             const downloadAnchorNode = document.createElement('a');
             downloadAnchorNode.setAttribute("href", dataStr);
             
-            const dateStr = new Date().toISOString().split('T')[0];
-            const prefix = isAuto ? "OT_AutoBackup" : "OT_Backup";
-            downloadAnchorNode.setAttribute("download", `${prefix}_${dateStr}.json`);
+            // Fixed filename as requested
+            const filename = "OT_Backup.json";
+            downloadAnchorNode.setAttribute("download", filename);
             
             document.body.appendChild(downloadAnchorNode); 
             downloadAnchorNode.click();
