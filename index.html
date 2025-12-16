@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="OT Calc">
     
-    <title>Overtime Calc v2.01</title>
+    <title>Overtime Calc v2.02</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -109,9 +109,8 @@
         }
 
         /* --- Base Styles --- */
-        /* html root font-size will be controlled by JS for scaling */
         html {
-            font-size: 100%; /* Default 16px */
+            font-size: 100%;
             transition: font-size 0.2s ease;
         }
 
@@ -139,7 +138,6 @@
             color: var(--color-text-main);
             border-radius: var(--radius-theme);
             transition: all 0.3s ease;
-            /* Ensure height adapts to font size */
             min-height: 2.5rem; 
         }
         .theme-input:focus {
@@ -189,7 +187,7 @@
     <header class="p-4 border-b border-skin-border sticky top-0 z-50 backdrop-blur-md bg-skin-base/80">
         <div class="flex justify-between items-center max-w-md mx-auto">
             <h1 class="text-2xl font-display font-bold tracking-wider italic">
-                <span class="text-skin-accent">OT</span> CALC <span class="text-xs not-italic text-skin-muted font-main">v2.01</span>
+                <span class="text-skin-accent">OT</span> CALC <span class="text-xs not-italic text-skin-muted font-main">v2.02</span>
             </h1>
             <div class="flex gap-3 items-center">
                 <!-- Font Size Controls -->
@@ -368,7 +366,6 @@
         }
 
         function applyFontSize() {
-            // Tailwind uses rem, so scaling root font-size scales everything
             document.documentElement.style.fontSize = `${currentZoom}%`;
         }
 
@@ -427,7 +424,7 @@
         let currentTotalHours = 0;
 
         // --- Init ---
-        initFontSize(); // Initialize Zoom
+        initFontSize();
         initTheme();
         elDate.valueAsDate = new Date();
         
@@ -570,7 +567,7 @@
                 loadHistory();
                 if (elAutoBackupToggle.checked) {
                     await exportData(true);
-                    showToastMessage("SAVED"); // Auto backup is silent
+                    showToastMessage("SAVED"); 
                 } else {
                     showToast();
                 }
@@ -581,7 +578,7 @@
             try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch (e) { return []; }
         }
 
-        // Export Logic with Share API for manual clicks
+        // Export Logic with Fix for "text.txt" - REMOVED 'text' property
         async function exportData(isAuto = false) {
             const data = getHistoryFromStorage();
             if (data.length === 0) { if(!isAuto) alert("無資料"); return; }
@@ -593,8 +590,8 @@
                 try {
                     await navigator.share({
                         files: [file],
-                        title: 'OT Calc Backup',
-                        text: 'Overtime Backup JSON'
+                        title: 'OT_Backup.json'
+                        // REMOVED 'text' property to prevent iOS turning it into a note/txt
                     });
                     return; 
                 } catch (err) {
